@@ -20,7 +20,7 @@ func readFile(filename string) int {
 	fileScanner.Split(bufio.ScanLines)
 
 	var maxGreen, maxRed, maxBlue int = 13, 12, 14
-	var sumGames
+	var sumGames int
 
 	for fileScanner.Scan() {
 		game := matchStr(fileScanner.Text(), "Game (\\d+):")
@@ -34,6 +34,33 @@ func readFile(filename string) int {
 		}
 
 		fmt.Println(fileScanner.Text(), " => G: ", green, " R: ", red, "B: ", blue)
+	}
+	return sumGames
+}
+
+func readFile2(filename string) int {
+	f, err := os.Open(filename)
+	if err != nil {
+		fmt.Println(err)
+		return 0
+	}
+	defer f.Close()
+
+	fileScanner := bufio.NewScanner(f)
+	fileScanner.Split(bufio.ScanLines)
+
+	var gamesPower, sumGames int
+
+	for fileScanner.Scan() {
+		green := matchStr(fileScanner.Text(), "(\\d+) green")
+		red := matchStr(fileScanner.Text(), "(\\d+) red")
+		blue := matchStr(fileScanner.Text(), "(\\d+) blue")
+
+		gamesPower = green * red * blue
+
+		sumGames += gamesPower
+
+		// fmt.Println(fileScanner.Text(), " => G: ", green, " R: ", red, "B: ", blue)
 	}
 	return sumGames
 }
@@ -59,12 +86,12 @@ func main() {
 	fmt.Println("---- Test DataSet1 ----")
 	fmt.Println(readFile("input_test1.txt"))
 
-	// fmt.Println("---- DataSet 1 ----")
-	// fmt.Println(readFile("input1.txt", 1))
+	fmt.Println("---- DataSet 1 ----")
+	fmt.Println(readFile("input1.txt"))
 
-	// fmt.Println("---- Test DataSet 2 ----")
-	// fmt.Println(readFile("input_test2.txt", 2))
+	fmt.Println("---- Test DataSet 2 ----")
+	fmt.Println(readFile2("input_test2.txt"))
 
-	// fmt.Println("---- DataSet 2 ----")
-	// fmt.Println(readFile("input2.txt", 2))
+	fmt.Println("---- DataSet 2 ----")
+	fmt.Println(readFile2("input2.txt"))
 }
