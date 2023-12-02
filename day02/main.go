@@ -19,15 +19,23 @@ func readFile(filename string) int {
 	fileScanner := bufio.NewScanner(f)
 	fileScanner.Split(bufio.ScanLines)
 
-	for fileScanner.Scan() {
-		var green, red, blue int
-		green = matchStr(fileScanner.Text(), "(\\d+) green")
-		red = matchStr(fileScanner.Text(), `(\d+) red`)
-		blue = matchStr(fileScanner.Text(), `(\d+) blue`)
+	var maxGreen, maxRed, maxBlue int = 13, 12, 14
+	var sumGames
 
-		fmt.Println("\n", fileScanner.Text(), " => G: ", green, " R: ", red, "B: ", blue)
+	for fileScanner.Scan() {
+		game := matchStr(fileScanner.Text(), "Game (\\d+):")
+
+		green := matchStr(fileScanner.Text(), "(\\d+) green")
+		red := matchStr(fileScanner.Text(), "(\\d+) red")
+		blue := matchStr(fileScanner.Text(), "(\\d+) blue")
+
+		if green <= maxGreen && red <= maxRed && blue <= maxBlue {
+			sumGames += game
+		}
+
+		fmt.Println(fileScanner.Text(), " => G: ", green, " R: ", red, "B: ", blue)
 	}
-	return 0
+	return sumGames
 }
 
 func matchStr(text string, patt string) int {
@@ -38,8 +46,8 @@ func matchStr(text string, patt string) int {
 	// fmt.Printf("Matches %v", matches)
 	// fmt.Println("Text: ", text, " Matches: ", pattern.NumSubexp(), " first: ", matches[0], " - ", matches[1])
 
-	for k, v := range matches {
-		fmt.Printf("%d. %s => %s\n", k, v, v[1])
+	for _, v := range matches {
+		// fmt.Printf("%d. %s => %s\n", k, v, v[1])
 		numb, _ = strconv.Atoi(v[1])
 		greater = max(numb, greater)
 	}
