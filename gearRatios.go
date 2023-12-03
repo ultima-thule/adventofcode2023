@@ -14,27 +14,36 @@ func gearRatios(filename string, calcFun func([]string) int) int {
 	defer closeFile(f)
 
 	fileScanner := bufio.NewScanner(f)
-	fileScanner.Split(bufio.ScanLines)
 
 	var result int
-	var window []string
+	var schema []string
 
 	for fileScanner.Scan() {
 		text := fileScanner.Text()
-		if len(window) == 0 {
-			window = append(window, strings.Repeat(".", len(text)))
-		}
-		window = append(window, text)
-
-		if len(window) > 3 {
-			window = window[1:]
-		}
-		result += calcFun(window)
+		schema = prepareData(schema, text, false)
+		result += calcFun(schema)
 	}
-	window = append(window, strings.Repeat(".", len(window[0])))[1:]
-	result += calcFun(window)
+	// last row
+	schema = prepareData(schema, "", true)
+	result += calcFun(schema)
 
 	return result
+}
+
+func prepareData(schema []string, text string, isLast bool) []string {
+	if len(schema) == 0 {
+		schema = append(schema, strings.Repeat(".", len(text)))
+	}
+	schema = append(schema, text)
+
+	if isLast {
+		schema = append(schema, strings.Repeat(".", len(schema[0])))
+	}
+
+	if len(schema) > 3 {
+		schema = schema[1:]
+	}
+	return schema
 }
 
 func isSymbol(c rune) bool {
@@ -87,6 +96,7 @@ func findParts(schema []string) int {
 
 func scanLeft(s string) int {
 	var res string
+
 	for i := len(s) - 1; i >= 0 && unicode.IsDigit(rune(s[i])); i-- {
 		res = string(s[i]) + res
 	}
