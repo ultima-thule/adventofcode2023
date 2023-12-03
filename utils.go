@@ -7,6 +7,8 @@ import (
 )
 
 func readFile(filename string) *os.File {
+	fmt.Println("=> DataSet: ", filename)
+
 	f, err := os.Open(filename)
 	if err != nil {
 		fmt.Println(err)

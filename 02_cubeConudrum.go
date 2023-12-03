@@ -2,28 +2,9 @@ package main
 
 import (
 	"bufio"
-	"fmt"
-	"os"
 	"regexp"
 	"strconv"
 )
-
-func readFile(filename string) *os.File {
-	f, err := os.Open(filename)
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	return f
-}
-
-func closeFile(f *os.File) {
-	err := f.Close()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-}
 
 func findMax(text string, patt string) int {
 	pattern := regexp.MustCompile(patt)
@@ -52,8 +33,6 @@ func extractData(text string) (int, int, int, int) {
 }
 
 func cubeConudrum(filename string, calcFun func(int, int, int, int) int) int {
-	fmt.Println("=> DataSet: ", filename)
-
 	f := readFile(filename)
 	defer closeFile(f)
 
@@ -80,14 +59,4 @@ func calcSum(game int, green int, red int, blue int) int {
 
 func calcPower(game int, green int, red int, blue int) int {
 	return green * red * blue
-}
-
-func main() {
-	fmt.Println(cubeConudrum("input_test1.txt", calcSum))
-
-	fmt.Println(cubeConudrum("input1.txt", calcSum))
-
-	fmt.Println(cubeConudrum("input_test2.txt", calcPower))
-
-	fmt.Println(cubeConudrum("input2.txt", calcPower))
 }

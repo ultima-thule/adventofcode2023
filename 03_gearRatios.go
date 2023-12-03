@@ -2,14 +2,11 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"strings"
 	"unicode"
 )
 
 func gearRatios(filename string, calcFun func([]string) int) int {
-	fmt.Println("=> DataSet: ", filename)
-
 	f := readFile(filename)
 	defer closeFile(f)
 

@@ -2,18 +2,12 @@ package main
 
 import (
 	"bufio"
-	"fmt"
-	"os"
 	"strings"
 )
 
-func calculateCalibration(filename string, version int) int {
-	f, err := os.Open(filename)
-	if err != nil {
-		fmt.Println(err)
-		return 0
-	}
-	defer f.Close()
+func trebuchet(filename string, version int) int {
+	f := readFile(filename)
+	defer closeFile(f)
 
 	fileScanner := bufio.NewScanner(f)
 	fileScanner.Split(bufio.ScanLines)
@@ -87,18 +81,4 @@ LOOP2:
 	}
 
 	return first, last
-}
-
-func main() {
-	fmt.Println("---- Test DataSet1 ----")
-	fmt.Println(calculateCalibration("input_test1.txt", 1))
-
-	fmt.Println("---- DataSet 1 ----")
-	fmt.Println(calculateCalibration("input1.txt", 1))
-
-	fmt.Println("---- Test DataSet 2 ----")
-	fmt.Println(calculateCalibration("input_test2.txt", 2))
-
-	fmt.Println("---- DataSet 2 ----")
-	fmt.Println(calculateCalibration("input2.txt", 2))
 }
