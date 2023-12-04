@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// Day 04 solution
 func scratchcards(filename string, calcFun func(string, map[int]int) int) int {
 	f := readFile(filename)
 	defer closeFile(f)
@@ -30,6 +31,7 @@ func countWorth(text string, mapWins map[int]int) int {
 	return calcScorePart1(len(myWinning))
 }
 
+// Parse single input line and return list of winning numbers
 func parseLine(text string) (int, map[int]bool) {
 	split1 := strings.Split(text, ":")
 	card, _ := strconv.Atoi(strings.Fields(split1[0])[1])
@@ -41,6 +43,7 @@ func parseLine(text string) (int, map[int]bool) {
 	return card, myWinning
 }
 
+// Split text into int values and add to result only those which are present in reference map
 func splitToInt(text string, winning map[int]bool) map[int]bool {
 	tmp := strings.Fields(text)
 	values := make(map[int]bool, len(tmp))
