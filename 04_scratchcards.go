@@ -79,7 +79,7 @@ func calcScorePart2(card int, winCount int, input map[int]int) (map[int]int, int
 	input[card] += 1
 
 	for i := card + 1; i <= card+winCount; i++ {
-		input[i] += 1 * input[card]
+		input[i] += input[card]
 	}
 	return input, input[card]
 }
