@@ -55,7 +55,7 @@ func splitToInt(text string, winning map[int]bool) map[int]bool {
 			continue
 		}
 		if winning == nil || winning[v] {
-			values[v] = winning == nil || winning[v]
+			values[v] = true
 		}
 	}
 	return values
