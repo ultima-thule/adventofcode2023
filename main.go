@@ -32,9 +32,9 @@ func main() {
 		fmt.Println(gearRatios(testDataTwo, findAdjacentGears))
 		fmt.Println(gearRatios(realDataTwo, findAdjacentGears))
 	case "04":
-		// fmt.Println(scratchcards(testDataOne, countWorth))
-		// fmt.Println(scratchcards(realDataOne, countWorth))
-		fmt.Println(scratchcards(testDataTwo, totalCards))
-		fmt.Println(scratchcards(realDataTwo, totalCards))
+		fmt.Println(scratchcards(testDataOne, countWorth))
+		fmt.Println(scratchcards(realDataOne, countWorth))
+		fmt.Println(scratchcards(testDataTwo, countTotalCards))
+		fmt.Println(scratchcards(realDataTwo, countTotalCards))
 	}
 }
