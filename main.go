@@ -36,5 +36,10 @@ func main() {
 		fmt.Println(scratchcards(realDataOne, countWorth))
 		fmt.Println(scratchcards(testDataTwo, countTotalCards))
 		fmt.Println(scratchcards(realDataTwo, countTotalCards))
+	case "05":
+		// fmt.Println(fertilizer(testDataOne, puzzle1))
+		// fmt.Println(fertilizer(realDataOne, puzzle1))
+		// fmt.Println(fertilizer(testDataTwo, puzzle2))
+		fmt.Println(fertilizer(realDataTwo, puzzle2))
 	}
 }
