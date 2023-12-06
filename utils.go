@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"strconv"
@@ -35,4 +36,22 @@ func convert(text string) int {
 		return intVar
 	}
 	return 0
+}
+
+func readInput(filename string, calcFun func([]string) int, prepFun func(data []string) []string) []string {
+	f := readFile(filename)
+	defer closeFile(f)
+
+	fileScanner := bufio.NewScanner(f)
+
+	input := []string{}
+
+	for fileScanner.Scan() {
+		input = append(input, fileScanner.Text())
+	}
+	if prepFun != nil {
+		input = prepFun(input)
+	}
+
+	return input
 }

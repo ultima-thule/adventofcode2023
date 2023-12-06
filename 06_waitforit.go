@@ -1,29 +1,14 @@
 package main
 
 import (
-	"bufio"
 	"strings"
 )
 
 // Day 04 solution
 func waitForIt(filename string, calcFun func([]string) int, prepFun func(data []string) []string) int {
-	f := readFile(filename)
-	defer closeFile(f)
+	input := readInput(filename, calcFun, prepFun)
 
-	fileScanner := bufio.NewScanner(f)
-
-	var result int
-	input := []string{}
-
-	for fileScanner.Scan() {
-		input = append(input, fileScanner.Text())
-	}
-	if prepFun != nil {
-		input = prepFun(input)
-	}
-	result = calcFun(input)
-
-	return result
+	return calcFun(input)
 }
 
 // Solve puzzle no 1 & 2

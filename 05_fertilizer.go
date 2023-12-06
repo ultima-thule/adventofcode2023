@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"sort"
 	"strconv"
@@ -9,21 +8,10 @@ import (
 )
 
 // Day 04 solution
-func fertilizer(filename string, calcFun func([]string) int) int {
-	f := readFile(filename)
-	defer closeFile(f)
+func fertilizer(filename string, calcFun func([]string) int, prepFun func(data []string) []string) int {
+	input := readInput(filename, calcFun, prepFun)
 
-	fileScanner := bufio.NewScanner(f)
-
-	var result int
-	input := []string{}
-
-	for fileScanner.Scan() {
-		input = append(input, fileScanner.Text())
-	}
-	result = calcFun(input)
-
-	return result
+	return calcFun(input)
 }
 
 // Solve puzzle no 1
