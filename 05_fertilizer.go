@@ -89,9 +89,11 @@ func parseRange(line string) (int, int, int) {
 // Split text into int values
 func splitToInts(text string) []int {
 	tmp := strings.Fields(text)
+	// fmt.Println(tmp)
 	values := make([]int, 0, len(tmp))
 
 	for _, raw := range tmp {
+		// fmt.Println(raw)
 		v, err := strconv.Atoi(raw)
 		if err != nil {
 			// log.Print(err)

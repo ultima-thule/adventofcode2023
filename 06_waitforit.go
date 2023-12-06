@@ -2,11 +2,11 @@ package main
 
 import (
 	"bufio"
-	"fmt"
+	"strings"
 )
 
 // Day 04 solution
-func waitForIt(filename string, calcFun func([]string) int) int {
+func waitForIt(filename string, calcFun func([]string) int, prepFun func(data []string) []string) int {
 	f := readFile(filename)
 	defer closeFile(f)
 
@@ -18,40 +18,41 @@ func waitForIt(filename string, calcFun func([]string) int) int {
 	for fileScanner.Scan() {
 		input = append(input, fileScanner.Text())
 	}
+	if prepFun != nil {
+		input = prepFun(input)
+	}
 	result = calcFun(input)
 
 	return result
 }
 
-// Solve puzzle no 1
+// Solve puzzle no 1 & 2
 func race(input []string) int {
+	if input == nil || len(input) < 2 {
+		return 0
+	}
+
 	var res int = 1
 
-	// translated := false
 	time := splitToInts(input[0])
 	dist := splitToInts(input[1])
-
-	// fmt.Println("Time: ", time)
-	// fmt.Println("Distance: ", dist)
 
 	racesCnt := len(time)
 
 	for i := 0; i < racesCnt; i++ {
-		// fmt.Println("Race: ", i, " time ", time[i], " distance ", dist[i])
 		cntWins := 0
 		for j := 0; j < time[i]-1; j++ {
-			// fmt.Println("Check ", j)
 			if travelDistance(j, time[i]) > dist[i] {
 				cntWins++
 			}
 		}
-		fmt.Println("no of wins: ", cntWins)
 		res *= cntWins
 	}
 
 	return res
 }
 
+// calculat travel distance
 func travelDistance(hold int, timeMax int) int {
 	if hold >= timeMax {
 		return 0
@@ -61,4 +62,19 @@ func travelDistance(hold int, timeMax int) int {
 	dist := hold * time
 
 	return dist
+}
+
+// prepare data for puzzle no 2
+func prepData(input []string) []string {
+	if input == nil || len(input) < 2 {
+		return nil
+	}
+
+	input[0] = strings.ReplaceAll(input[0], "Time:", "")
+	input[0] = strings.ReplaceAll(input[0], " ", "")
+
+	input[1] = strings.ReplaceAll(input[1], "Distance:", "")
+	input[1] = strings.ReplaceAll(input[1], " ", "")
+
+	return input
 }
