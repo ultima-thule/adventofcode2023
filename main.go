@@ -39,7 +39,12 @@ func main() {
 	case "05":
 		// fmt.Println(fertilizer(testDataOne, puzzle1))
 		// fmt.Println(fertilizer(realDataOne, puzzle1))
-		// fmt.Println(fertilizer(testDataTwo, puzzle2))
-		fmt.Println(fertilizer(realDataTwo, puzzle2))
+		fmt.Println(fertilizer(testDataTwo, puzzle2))
+		// fmt.Println(fertilizer(realDataTwo, puzzle2))
+	case "06":
+		// fmt.Println((waitForIt(testDataOne, race)))
+		// fmt.Println((waitForIt(realDataOne, race)))
+		fmt.Println(waitForIt(testDataTwo, race))
+		// fmt.Println(waitForIt(realDataTwo, race))
 	}
 }
