@@ -46,5 +46,10 @@ func main() {
 		fmt.Println((waitForIt(realDataOne, race, nil)))
 		fmt.Println(waitForIt(testDataTwo, race, prepData))
 		fmt.Println(waitForIt(realDataTwo, race, prepData))
+	case "07":
+		fmt.Println((camelCards(testDataOne, draw, prepData07)))
+		fmt.Println((camelCards(realDataOne, draw, prepData07)))
+		fmt.Println(camelCards(testDataTwo, draw2, prepData07))
+		fmt.Println(camelCards(realDataTwo, draw2, prepData07))
 	}
 }

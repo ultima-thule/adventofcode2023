@@ -135,17 +135,15 @@ func puzzle2(input []string) int {
 			// fmt.Println("--- Start of map")
 			continue
 		}
+		// fmt.Println(input[i], " ", i, " ", len(input))
 		if input[i] == "" {
 			// end of map
-			// sort ranges
-			sort.Slice(translMap[mapIndex], func(i, j int) bool {
-				return translMap[mapIndex][i].srcStart < translMap[mapIndex][j].srcStart
-			})
-
+			// fmt.Println(translMap[mapIndex])
 			mapIndex++
 			// fmt.Println("--- End of map\n")
 			continue
 		}
+
 		// translate
 		srcStart, srcEnd, offset := parseRange(input[i])
 		item := destination{srcStart, srcEnd, offset}
@@ -154,7 +152,19 @@ func puzzle2(input []string) int {
 	}
 
 	// apply translations
-	for i := 0; i < 7; i++ {
+	for k := 0; k < 7; k++ {
+		// sort ranges
+
+		sortSlice(translMap[k])
+		translMap[k] = fillInSlice(translMap[k])
+		sortSlice(translMap[k])
+
+		makeTranslation(seeds[0], translMap[k])
+		// sort.Slice(translMap[k], func(i, j int) bool {
+		// 	return translMap[k][i].srcStart < translMap[k][j].srcStart
+		// })
+		// translMap[mapIndex] = fillInSlice(translMap[mapIndex])
+
 		// take seed range
 		// sX := seeds[0][0]
 		// sY := seeds[0][1]
@@ -175,4 +185,45 @@ func isInRange(x int, start int, end int) bool {
 
 func isBelowLeft(x int, start int) bool {
 	return x < start
+}
+
+func fillInSlice(sl []destination) []destination {
+	// var last int = -1
+
+	if len(sl) < 1 {
+		return nil
+	}
+
+	if sl[0].srcStart != 0 {
+		sl = append(sl, destination{0, sl[0].srcStart - 1, 0})
+	}
+
+	return sl
+}
+
+func sortSlice(sl []destination) {
+	sort.Slice(sl, func(i, j int) bool {
+		return sl[i].srcStart < sl[j].srcStart
+	})
+}
+
+func makeTranslation(seeds []int, destRange []destination) {
+	// var translated []int
+
+	for i := 0; i < len(destRange); i++ {
+		oStart, oEnd := getOverlap(seeds[0], seeds[1], destRange[i].srcStart, destRange[i].srcEnd)
+		// translated = append(translated, []int{oStart + destRange[i].offset, oEnd + destRange[i].offset})
+		fmt.Println("Overlap: ", oStart, " - ", oEnd)
+	}
+}
+
+func getOverlap(aStart int, aEnd int, bStart int, bEnd int) (int, int) {
+	fmt.Println("Search for overlap [", aStart, " ", aEnd, "] and [", bStart, " ", bEnd, "]")
+	if bStart > aEnd || aStart > bEnd {
+		return -1, -1
+	}
+	oStart := max(aStart, bStart)
+	oEnd := min(aEnd, bEnd)
+
+	return oStart, oEnd
 }

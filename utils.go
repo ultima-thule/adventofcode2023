@@ -55,3 +55,19 @@ func readInput(filename string, calcFun func([]string) int, prepFun func(data []
 
 	return input
 }
+
+func readInput07(filename string, calcFun func([]game) int, prepFun func(data []string) []game) []game {
+	f := readFile(filename)
+	defer closeFile(f)
+
+	fileScanner := bufio.NewScanner(f)
+
+	input := []string{}
+
+	for fileScanner.Scan() {
+		input = append(input, fileScanner.Text())
+	}
+
+	output := prepFun(input)
+	return output
+}
