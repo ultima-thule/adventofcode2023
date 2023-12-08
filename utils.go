@@ -74,7 +74,7 @@ func readInput07(filename string, prepFun func(data []string) []game) []game {
 }
 
 func prepData07(input []string) []game {
-	if input == nil || len(input) < 2 {
+	if input == nil {
 		return nil
 	}
 
@@ -97,4 +97,47 @@ func keyExists(value int, deck map[rune]int) bool {
 		}
 	}
 	return false
+}
+
+func readInput08(filename string, prepFun func(data []string) map[string][]string) (map[string][]string, string) {
+	f := readFile(filename)
+	defer closeFile(f)
+
+	fileScanner := bufio.NewScanner(f)
+
+	input := []string{}
+	var path string = ""
+
+	for fileScanner.Scan() {
+		if path == "" {
+			path = fileScanner.Text()
+			continue
+		}
+		txt := fileScanner.Text()
+
+		input = append(input, txt)
+	}
+
+	output := prepFun(input[1:])
+	return output, path
+}
+
+func prepData08(input []string) map[string][]string {
+	if input == nil {
+		return nil
+	}
+
+	// fmt.Println(input)
+
+	output := make(map[string][]string, len(input))
+
+	for i := 0; i < len(input); i++ {
+		a := strings.Split(input[i], " = ")
+		c := strings.ReplaceAll(a[1], "(", "")
+		c = strings.ReplaceAll(c, ")", "")
+		b := strings.Split(c, ", ")
+		output[a[0]] = []string{b[0], b[1]}
+	}
+
+	return output
 }

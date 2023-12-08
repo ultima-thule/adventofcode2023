@@ -51,5 +51,11 @@ func main() {
 		fmt.Println((camelCards(realDataOne, playGame, prepData07, false)))
 		fmt.Println(camelCards(testDataTwo, playGame, prepData07, true))
 		fmt.Println(camelCards(realDataTwo, playGame, prepData07, true))
+	case "08":
+		fmt.Println((hauntedWasteland(testDataOne, travel, prepData08)))
+		fmt.Println((hauntedWasteland(realDataOne, travel, prepData08)))
+		// fmt.Println(hauntedWasteland(testDataTwo, travel, prepData08))
+		// fmt.Println(hauntedWasteland(realDataTwo, travel, prepData08))
+
 	}
 }

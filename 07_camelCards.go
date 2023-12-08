@@ -18,7 +18,7 @@ func camelCards(filename string, calcFun func([]game, bool) int, prepFun func(da
 
 // Solve puzzle no 1 && 2
 func playGame(input []game, useJoker bool) int {
-	if input == nil || len(input) < 2 {
+	if input == nil {
 		return 0
 	}
 
