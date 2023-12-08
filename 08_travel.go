@@ -7,18 +7,17 @@ func hauntedWasteland(filename string, calcFun func(map[string][]string, string)
 }
 
 // Solve puzzle no 1
-func travel(input map[string][]string, path string) int {
-	if input == nil || path == "" {
+func travel1(input map[string][]string, commands string) int {
+	if input == nil || commands == "" {
 		return 0
 	}
 
 	var res int = 0
 	lastNode := "AAA"
-	// fmt.Println("Path:", path)
 
+	// iterate through commands until ZZZ found
 	for {
-		found, node, cnt := goThroughPath(input, path, lastNode)
-		// fmt.Println("Found: ", found, " node: ", node, " cnt ", cnt, " res ", res)
+		found, node, cnt := goSingleRound(input, commands, lastNode)
 		res += cnt
 		lastNode = node
 		if found == true {
@@ -29,43 +28,16 @@ func travel(input map[string][]string, path string) int {
 	return res
 }
 
-// Solve puzzle no 2
-func travel2(input map[string][]string, path string) int {
-	if input == nil || path == "" {
-		return 0
-	}
-
-	var res int = 0
-	nodes := findNodes(input)
-	// fmt.Println("Starting nodes:", nodes)
-
-	res = goThroughPath2(input, path, nodes)
-
-	return res
-}
-
-func findNodes(input map[string][]string) []string {
-	res := make([]string, 0)
-
-	for k := range input {
-		if k[len(k)-1:] == "A" {
-			res = append(res, k)
-		}
-	}
-
-	return res
-}
-
-func goThroughPath(input map[string][]string, path string, lastNode string) (bool, string, int) {
+func goSingleRound(input map[string][]string, commands string, lastNode string) (bool, string, int) {
 	var found bool = false
 	var cnt int = 0
 
-	for _, c := range path {
-		// fmt.Println("Let:", string(c))
-		if string(c) == "L" {
+	for _, c := range commands {
+		command := string(c)
+		if command == "L" {
 			lastNode = input[lastNode][0]
 		}
-		if string(c) == "R" {
+		if command == "R" {
 			lastNode = input[lastNode][1]
 		}
 		cnt++
@@ -77,67 +49,59 @@ func goThroughPath(input map[string][]string, path string, lastNode string) (boo
 	return found, lastNode, cnt
 }
 
-func goThroughPath2(input map[string][]string, path string, nodes []string) int {
-	// var found bool = false
-	// var cnt int = 0
-
-	// fmt.Println("Nodes list: ", nodes)
-	result := make([]int, 0)
-
-	for k := 0; k < len(nodes); k++ {
-		i := 0
-
-		letter := nodes[k][len(nodes[k])-1:]
-		// fmt.Println("[", i, "] Last letter: ", letter)
-
-		for letter != "Z" {
-			item := string(path[i%len(path)])
-			// fmt.Println("Item: ", item)
-
-			if item == "L" {
-				// fmt.Println("Go left to: ", input[nodes[k]][0])
-				nodes[k] = input[nodes[k]][0]
-			}
-			if item == "R" {
-				// fmt.Println("Go right to: ", input[nodes[k]][1])
-				nodes[k] = input[nodes[k]][1]
-			}
-			i++
-
-			letter = nodes[k][len(nodes[k])-1:]
-			// fmt.Println("Last letter: ", letter)
-
-		}
-		result = append(result, i)
-		// fmt.Println(result)
+// Solve puzzle no 2
+func travel2(input map[string][]string, commands string) int {
+	if input == nil || commands == "" {
+		return 0
 	}
 
-	// return LCM(result[0], result[1], result[2], result[3], result[4], result[5])
+	nodes := findStartNodes(input)
+	result := calcAllPaths(input, commands, nodes)
+
+	// find LCM among all paths lenghts
 	if len(result) > 2 {
 		return LCM(result[0], result[1], result...)
 	}
 	return LCM(result[0], result[len(result)-1])
 }
 
-// https://siongui.github.io/2017/06/03/go-find-lcm-by-gcd/
-// greatest common divisor (GCD) via Euclidean algorithm
-func GCD(a, b int) int {
-	for b != 0 {
-		t := b
-		b = a % b
-		a = t
+// find all nodes ending with A
+func findStartNodes(input map[string][]string) []string {
+	res := make([]string, 0)
+
+	for k := range input {
+		if k[len(k)-1:] == "A" {
+			res = append(res, k)
+		}
 	}
-	return a
+	return res
 }
 
-// https://siongui.github.io/2017/06/03/go-find-lcm-by-gcd/
-// find Least Common Multiple (LCM) via GCD
-func LCM(a, b int, integers ...int) int {
-	result := a * b / GCD(a, b)
+// calculate single path leghth
+func calcAllPaths(input map[string][]string, path string, nodes []string) []int {
+	result := make([]int, 0)
 
-	for i := 0; i < len(integers); i++ {
-		result = LCM(result, integers[i])
+	for k := 0; k < len(nodes); k++ {
+		i := 0
+
+		endLetter := nodes[k][len(nodes[k])-1:]
+
+		for endLetter != "Z" {
+			command := string(path[i%len(path)])
+			nodes[k] = input[nodes[k]][getCmdIdx(command)]
+			i++
+
+			endLetter = nodes[k][len(nodes[k])-1:]
+
+		}
+		result = append(result, i)
 	}
-
 	return result
+}
+
+func getCmdIdx(letter string) int {
+	if letter == "L" {
+		return 0
+	}
+	return 1
 }
