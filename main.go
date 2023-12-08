@@ -54,8 +54,8 @@ func main() {
 	case "08":
 		fmt.Println((hauntedWasteland(testDataOne, travel, prepData08)))
 		fmt.Println((hauntedWasteland(realDataOne, travel, prepData08)))
-		// fmt.Println(hauntedWasteland(testDataTwo, travel, prepData08))
-		// fmt.Println(hauntedWasteland(realDataTwo, travel, prepData08))
+		fmt.Println(hauntedWasteland(testDataTwo, travel2, prepData08))
+		fmt.Println(hauntedWasteland(realDataTwo, travel2, prepData08))
 
 	}
 }
