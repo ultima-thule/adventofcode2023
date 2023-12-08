@@ -34,13 +34,9 @@ func goSingleRound(input map[string][]string, commands string, lastNode string) 
 
 	for _, c := range commands {
 		command := string(c)
-		if command == "L" {
-			lastNode = input[lastNode][0]
-		}
-		if command == "R" {
-			lastNode = input[lastNode][1]
-		}
+		lastNode = input[lastNode][getCmdIdx(command)]
 		cnt++
+
 		if lastNode == "ZZZ" {
 			found = true
 			break
