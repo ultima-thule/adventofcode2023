@@ -3,6 +3,7 @@ package main
 import (
 	"sort"
 	"strings"
+	"time"
 )
 
 type destination struct {
@@ -20,6 +21,8 @@ func fertilizer(filename string, calcFun func([]string) int, prepFun func(data [
 
 // Solve puzzle no 1
 func puzzle1(input []string) int {
+	defer timeTrack(time.Now(), "part 1")
+
 	var res int = -1
 
 	translated := false
@@ -69,6 +72,8 @@ func parseRange(line string) (int, int, int) {
 
 // Solve puzzle no 2
 func puzzle2(input []string) int {
+	defer timeTrack(time.Now(), "part 2")
+
 	var res int = -1
 
 	seedsTmp := splitToInts(input[0])

@@ -3,9 +3,11 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func readFile(filename string) *os.File {
@@ -180,4 +182,9 @@ func splitToInts(text string) []int {
 		values = append(values, v)
 	}
 	return values
+}
+
+func timeTrack(start time.Time, name string) {
+	elapsed := time.Since(start)
+	log.Printf("%s took %s", name, elapsed)
 }
