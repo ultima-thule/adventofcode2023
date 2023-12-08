@@ -1,11 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"sort"
-	"strconv"
 	"strings"
 )
+
+type destination struct {
+	srcStart int
+	srcEnd   int
+	offset   int
+}
 
 // Day 04 solution
 func fertilizer(filename string, calcFun func([]string) int, prepFun func(data []string) []string) int {
@@ -21,30 +25,24 @@ func puzzle1(input []string) int {
 	translated := false
 	seeds := splitToInts(input[0])
 
+	// take every seed
 	for j := 0; j < len(seeds); j++ {
-		fmt.Println("Seed: ", seeds[j])
 		translated = false
 
+		// run all translations
 		for i := 2; i < len(input); i++ {
-			// fmt.Println("Input: ", input[i])
+			// start of map
 			if strings.Contains(input[i], "map") {
-				fmt.Println("--- Start of map")
 				continue
 			}
+			// end of map
 			if input[i] == "" {
-				// end of map
-				if !translated {
-					fmt.Println("No translation found: ", seeds[j], " => saving ", seeds[j])
-				}
 				translated = false
-				fmt.Println("--- End of map\n")
 				continue
 			}
 			// translate
 			srcStart, srcEnd, offset := parseRange(input[i])
-			// fmt.Println("Src from: ", srcStart, " to: ", srcEnd, " offset ", offset)
 			if !translated && srcStart <= seeds[j] && seeds[j] <= srcEnd {
-				fmt.Println("Translation found: ", seeds[j], " => ", seeds[j]+offset)
 				seeds[j] += offset
 				translated = true
 			}
@@ -52,52 +50,21 @@ func puzzle1(input []string) int {
 		if res == -1 {
 			res = seeds[j]
 		}
+		// find lowest number
 		res = min(res, seeds[j])
-
 	}
-
-	fmt.Println("Result: ", seeds)
 
 	return res
 }
 
+// convert into range: start, stop, offset to calculate destination
 func parseRange(line string) (int, int, int) {
 	split := splitToInts(line)
-
-	// fmt.Println("Line: ", line, " split: ", split)
 
 	if len(split) != 3 {
 		return -1, -1, 0
 	}
-
-	// fmt.Println("Src from: ", split[1], " to: ", split[1]+split[2]-1, " offset ", split[0]-split[1])
 	return split[1], split[1] + split[2] - 1, split[0] - split[1]
-}
-
-// Split text into int values
-func splitToInts(text string) []int {
-	tmp := strings.Fields(text)
-	// fmt.Println(tmp)
-	values := make([]int, 0, len(tmp))
-
-	for _, raw := range tmp {
-		// fmt.Println(raw)
-		v, err := strconv.Atoi(raw)
-		if err != nil {
-			// log.Print(err)
-			continue
-		}
-		values = append(values, v)
-	}
-	// fmt.Println("Line: ", text, " split: ", values)
-
-	return values
-}
-
-type destination struct {
-	srcStart int
-	srcEnd   int
-	offset   int
 }
 
 // Solve puzzle no 2
@@ -105,55 +72,45 @@ func puzzle2(input []string) int {
 	var res int = -1
 
 	seedsTmp := splitToInts(input[0])
-
 	seeds := [][]int{}
 
+	// calculate start and end of seeds ranges
 	for x := 0; x < len(seedsTmp); x += 2 {
 		tmp1 := []int{seedsTmp[x], seedsTmp[x] + seedsTmp[x+1] - 1}
 		seeds = append(seeds, tmp1)
 	}
-	fmt.Println("Seeds list: ", seeds)
 
 	// read all translations into structure
 	translMap := make([][]destination, 7)
 	var mapIndex int = 0
 
+	// convert all maps into ranges
 	for i := 2; i < len(input); i++ {
-		// fmt.Println("Input: ", input[i])
+		// start of map
 		if strings.Contains(input[i], "map") {
-			// fmt.Println("--- Start of map")
 			continue
 		}
-		// fmt.Println(input[i], " ", i, " ", len(input))
+		// end of map
 		if input[i] == "" {
-			// end of map
-			// fmt.Println(translMap[mapIndex])
 			mapIndex++
-			// fmt.Println("--- End of map\n")
 			continue
 		}
 
-		// translate
+		// convert into range
 		srcStart, srcEnd, offset := parseRange(input[i])
 		item := destination{srcStart, srcEnd, offset}
-		// fmt.Println("Src from: ", srcStart, " to: ", srcEnd, " offset ", offset)
 		translMap[mapIndex] = append(translMap[mapIndex], item)
 	}
 
-	// apply translations
+	// order ranges and add missing fillers with offset=0
 	for k := 0; k < 7; k++ {
-		// sort ranges
-
-		sortSlice(translMap[k])
+		sortRanges(translMap[k])
 		translMap[k] = fillInSlice(translMap[k])
-		sortSlice(translMap[k])
+		sortRanges(translMap[k])
 	}
 
-	// apply translations
+	// apply translations to all seeds
 	for k := 0; k < 7; k++ {
-		fmt.Println("=== Applying map no ", k)
-		fmt.Println("= Seeds: ", seeds)
-
 		tmp := make([][]int, 0)
 
 		for i := 0; i < len(seeds); i++ {
@@ -164,74 +121,62 @@ func puzzle2(input []string) int {
 		}
 	}
 
-	sortSlice2(seeds)
-	fmt.Println("Translated list: ", seeds)
+	sortSlice(seeds)
 
 	res = seeds[0][0]
 
 	return res
 }
 
-func isInRange(x int, start int, end int) bool {
-	return x >= start && x <= end
-}
-
-func isBelowLeft(x int, start int) bool {
-	return x < start
-}
-
+// add empty ranges with offset = 0
 func fillInSlice(sl []destination) []destination {
-	// var last int = -1
-
 	if len(sl) < 1 {
 		return nil
 	}
-
 	if sl[0].srcStart != 0 {
 		sl = append(sl, destination{0, sl[0].srcStart - 1, 0})
 	}
-
 	return sl
 }
 
-func sortSlice(sl []destination) {
+// sort ranges nased on start of range
+func sortRanges(sl []destination) {
 	sort.Slice(sl, func(i, j int) bool {
 		return sl[i].srcStart < sl[j].srcStart
 	})
 }
 
-func sortSlice2(sl [][]int) {
+// sort slice of slice based on first elem
+func sortSlice(sl [][]int) {
 	sort.Slice(sl, func(i, j int) bool {
 		return sl[i][0] < sl[j][0]
 	})
 }
 
+// translate seeds positions into new range
 func makeTranslation(seeds []int, destRange []destination) [][]int {
-	// fmt.Println("Start seeds: ", seeds)
 	translated := make([][]int, 0)
 
 	for i := 0; i < len(destRange); i++ {
 		oStart, oEnd := getOverlap(seeds[0], seeds[1], destRange[i].srcStart, destRange[i].srcEnd)
+		// no overlap found
 		if oStart == -1 && oEnd == -1 {
 			continue
 		}
-		fmt.Println("Overlap: ", oStart, " - ", oEnd)
-
+		// calculate destination range
 		item := []int{oStart + destRange[i].offset, oEnd + destRange[i].offset}
 		translated = append(translated, item)
 	}
 
+	// no translation found, return original seeds
 	if len(translated) == 0 {
-		fmt.Println(seeds, " => ", seeds, "\n")
 		translated = append(translated, seeds)
-		return translated
 	}
-	fmt.Println(seeds, " => ", translated, "\n")
 	return translated
 }
 
+// get overlap of two ranges
 func getOverlap(aStart int, aEnd int, bStart int, bEnd int) (int, int) {
-	// fmt.Println("Search for overlap [", aStart, " ", aEnd, "] and [", bStart, " ", bEnd, "]")
 	if bStart > aEnd || aStart > bEnd {
 		return -1, -1
 	}

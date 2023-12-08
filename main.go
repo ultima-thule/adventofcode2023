@@ -37,8 +37,8 @@ func main() {
 		fmt.Println(scratchcards(testDataTwo, countTotalCards))
 		fmt.Println(scratchcards(realDataTwo, countTotalCards))
 	case "05":
-		// fmt.Println(fertilizer(testDataOne, puzzle1, nil))
-		// fmt.Println(fertilizer(realDataOne, puzzle1, nil))
+		fmt.Println(fertilizer(testDataOne, puzzle1, nil))
+		fmt.Println(fertilizer(realDataOne, puzzle1, nil))
 		fmt.Println(fertilizer(testDataTwo, puzzle2, nil))
 		fmt.Println(fertilizer(realDataTwo, puzzle2, nil))
 	case "06":

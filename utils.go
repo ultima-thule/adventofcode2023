@@ -164,3 +164,20 @@ func LCM(a, b int, integers ...int) int {
 
 	return result
 }
+
+// split text into int values
+func splitToInts(text string) []int {
+	tmp := strings.Fields(text)
+	values := make([]int, 0, len(tmp))
+
+	for _, raw := range tmp {
+		// fmt.Println(raw)
+		v, err := strconv.Atoi(raw)
+		if err != nil {
+			// log.Print(err)
+			continue
+		}
+		values = append(values, v)
+	}
+	return values
+}
