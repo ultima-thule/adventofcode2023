@@ -106,23 +106,12 @@ func puzzle2(input []string) int {
 
 	seedsTmp := splitToInts(input[0])
 
-	seeds := make([][]int, 2)
-	seeds[0] = []int{seedsTmp[0], seedsTmp[0] + seedsTmp[1] - 1}
-	seeds[1] = []int{seedsTmp[2], seedsTmp[2] + seedsTmp[3] - 1}
+	seeds := [][]int{}
 
-	// seeds[0] = {}
-	// mapResults := map[int]int{}
-
-	// for i := seedsTmp[0]; i < seedsTmp[0]+seedsTmp[1]; i++ {
-	// 	seeds = append(seeds, i)
-	// 	// mapResults[i] = 0
-	// }
-
-	// for i := seedsTmp[2]; i < seedsTmp[2]+seedsTmp[3]; i++ {
-	// 	seeds = append(seeds, i)
-	// 	// mapResults[i] = 0
-	// }
-
+	for x := 0; x < len(seedsTmp); x += 2 {
+		tmp1 := []int{seedsTmp[x], seedsTmp[x] + seedsTmp[x+1] - 1}
+		seeds = append(seeds, tmp1)
+	}
 	fmt.Println("Seeds list: ", seeds)
 
 	// read all translations into structure
@@ -158,23 +147,27 @@ func puzzle2(input []string) int {
 		sortSlice(translMap[k])
 		translMap[k] = fillInSlice(translMap[k])
 		sortSlice(translMap[k])
-
-		makeTranslation(seeds[0], translMap[k])
-		// sort.Slice(translMap[k], func(i, j int) bool {
-		// 	return translMap[k][i].srcStart < translMap[k][j].srcStart
-		// })
-		// translMap[mapIndex] = fillInSlice(translMap[mapIndex])
-
-		// take seed range
-		// sX := seeds[0][0]
-		// sY := seeds[0][1]
-
-		// case: it is inside
-		// if isInRange((x, translMap[i]))
-		// case: first eleme inside range, second outside,not in next range
 	}
 
-	fmt.Println("Translation list: ", translMap)
+	// apply translations
+	for k := 0; k < 7; k++ {
+		fmt.Println("=== Applying map no ", k)
+		fmt.Println("= Seeds: ", seeds)
+
+		tmp := make([][]int, 0)
+
+		for i := 0; i < len(seeds); i++ {
+			tmp = append(tmp, makeTranslation(seeds[i], translMap[k])...)
+		}
+		if tmp != nil {
+			seeds = append(tmp)
+		}
+	}
+
+	sortSlice2(seeds)
+	fmt.Println("Translated list: ", seeds)
+
+	res = seeds[0][0]
 
 	return res
 }
@@ -207,18 +200,38 @@ func sortSlice(sl []destination) {
 	})
 }
 
-func makeTranslation(seeds []int, destRange []destination) {
-	// var translated []int
+func sortSlice2(sl [][]int) {
+	sort.Slice(sl, func(i, j int) bool {
+		return sl[i][0] < sl[j][0]
+	})
+}
+
+func makeTranslation(seeds []int, destRange []destination) [][]int {
+	// fmt.Println("Start seeds: ", seeds)
+	translated := make([][]int, 0)
 
 	for i := 0; i < len(destRange); i++ {
 		oStart, oEnd := getOverlap(seeds[0], seeds[1], destRange[i].srcStart, destRange[i].srcEnd)
-		// translated = append(translated, []int{oStart + destRange[i].offset, oEnd + destRange[i].offset})
+		if oStart == -1 && oEnd == -1 {
+			continue
+		}
 		fmt.Println("Overlap: ", oStart, " - ", oEnd)
+
+		item := []int{oStart + destRange[i].offset, oEnd + destRange[i].offset}
+		translated = append(translated, item)
 	}
+
+	if len(translated) == 0 {
+		fmt.Println(seeds, " => ", seeds, "\n")
+		translated = append(translated, seeds)
+		return translated
+	}
+	fmt.Println(seeds, " => ", translated, "\n")
+	return translated
 }
 
 func getOverlap(aStart int, aEnd int, bStart int, bEnd int) (int, int) {
-	fmt.Println("Search for overlap [", aStart, " ", aEnd, "] and [", bStart, " ", bEnd, "]")
+	// fmt.Println("Search for overlap [", aStart, " ", aEnd, "] and [", bStart, " ", bEnd, "]")
 	if bStart > aEnd || aStart > bEnd {
 		return -1, -1
 	}
