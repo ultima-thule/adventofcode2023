@@ -83,16 +83,15 @@ func calcAllPaths(input map[string][]string, path string, nodes []string) []int 
 
 	for k := 0; k < len(nodes); k++ {
 		i := 0
+		lastIdx := len(nodes[k]) - 1
 
-		endLetter := nodes[k][len(nodes[k])-1:]
-
+		endLetter := nodes[k][lastIdx:]
 		for endLetter != "Z" {
 			command := string(path[i%len(path)])
 			nodes[k] = input[nodes[k]][getCmdIdx(command)]
 			i++
 
-			endLetter = nodes[k][len(nodes[k])-1:]
-
+			endLetter = nodes[k][lastIdx:]
 		}
 		result = append(result, i)
 	}
