@@ -35,8 +35,8 @@ func puzzle09_2(input []int) int {
 }
 
 // reduce slice to zeros
-func reduce(input []int, steps []int, isLeft bool) ([]int, []int) {
-	if checkZeros(input) {
+func reduce(input []int, steps []int, isSecondPuzzle bool) ([]int, []int) {
+	if onlyZeros(input) {
 		return input, steps
 	}
 
@@ -46,18 +46,18 @@ func reduce(input []int, steps []int, isLeft bool) ([]int, []int) {
 	}
 
 	n := res[(len(res) - 1)]
-	if isLeft {
+	if isSecondPuzzle {
 		n = input[0]
 	}
 	steps = append(steps, n)
 
-	r, s := reduce(res, steps, isLeft)
+	r, s := reduce(res, steps, isSecondPuzzle)
 
 	return r, s
 }
 
 // check if slice contains only zeros
-func checkZeros(input []int) bool {
+func onlyZeros(input []int) bool {
 	res := true
 	for i := 0; i < len(input); i++ {
 		res = res && (input[i] == 0)
