@@ -6,7 +6,7 @@ func puzzle09_1(input []int) int {
 		return 0
 	}
 
-	var res int = input[len(input)-1]
+	res := input[len(input)-1]
 	steps := make([]int, 0)
 
 	_, n := reduce(input, steps, false)
@@ -23,7 +23,7 @@ func puzzle09_2(input []int) int {
 		return 0
 	}
 
-	var res int = 0
+	res := 0
 	steps := make([]int, 0)
 
 	_, n := reduce(input, steps, true)
