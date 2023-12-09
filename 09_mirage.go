@@ -26,9 +26,9 @@ func puzzle09_2(input []int) int {
 	res := 0
 	steps := make([]int, 0)
 
-	_, n := reduce(input, steps, true)
-	for i := len(n) - 1; i >= 0; i-- {
-		res = n[i] - res
+	_, s := reduce(input, steps, true)
+	for i := len(s) - 1; i >= 0; i-- {
+		res = s[i] - res
 	}
 
 	return res
@@ -45,11 +45,11 @@ func reduce(input []int, steps []int, isLeft bool) ([]int, []int) {
 		res = append(res, input[i+1]-input[i])
 	}
 
-	step := res[(len(res) - 1)]
+	n := res[(len(res) - 1)]
 	if isLeft {
-		step = input[0]
+		n = input[0]
 	}
-	steps = append(steps, step)
+	steps = append(steps, n)
 
 	r, s := reduce(res, steps, isLeft)
 
@@ -59,8 +59,8 @@ func reduce(input []int, steps []int, isLeft bool) ([]int, []int) {
 // check if slice contains only zeros
 func checkZeros(input []int) bool {
 	res := true
-	for k := 0; k < len(input); k++ {
-		res = res && (input[k] == 0)
+	for i := 0; i < len(input); i++ {
+		res = res && (input[i] == 0)
 	}
 	return res
 }
