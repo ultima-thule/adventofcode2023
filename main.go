@@ -42,20 +42,25 @@ func main() {
 		fmt.Println(fertilizer(testDataTwo, puzzle2, nil), "\n")
 		fmt.Println(fertilizer(realDataTwo, puzzle2, nil), "\n")
 	case "06":
-		fmt.Println((waitForIt(testDataOne, race, nil)), "\n")
-		fmt.Println((waitForIt(realDataOne, race, nil)), "\n")
+		fmt.Println(waitForIt(testDataOne, race, nil), "\n")
+		fmt.Println(waitForIt(realDataOne, race, nil), "\n")
 		fmt.Println(waitForIt(testDataTwo, race, prepData), "\n")
 		fmt.Println(waitForIt(realDataTwo, race, prepData), "\n")
 	case "07":
-		fmt.Println((camelCards(testDataOne, playGame, prepData07, false)), "\n")
-		fmt.Println((camelCards(realDataOne, playGame, prepData07, false)), "\n")
+		fmt.Println(camelCards(testDataOne, playGame, prepData07, false), "\n")
+		fmt.Println(camelCards(realDataOne, playGame, prepData07, false), "\n")
 		fmt.Println(camelCards(testDataTwo, playGame, prepData07, true), "\n")
 		fmt.Println(camelCards(realDataTwo, playGame, prepData07, true), "\n")
 	case "08":
-		fmt.Println((hauntedWasteland(testDataOne, travel1, prepData08)), "\n")
-		fmt.Println((hauntedWasteland(realDataOne, travel1, prepData08)), "\n")
+		fmt.Println(hauntedWasteland(testDataOne, travel1, prepData08), "\n")
+		fmt.Println(hauntedWasteland(realDataOne, travel1, prepData08), "\n")
 		fmt.Println(hauntedWasteland(testDataTwo, travel2, prepData08), "\n")
 		fmt.Println(hauntedWasteland(realDataTwo, travel2, prepData08), "\n")
+	case "09":
+		// fmt.Println(mirage(testDataOne, puzzle09_1, prepData09), "\n")
+		// fmt.Println(mirage(realDataOne, puzzle09_1, prepData09), "\n")
+		fmt.Println(mirage(testDataTwo, puzzle09_2, prepData09), "\n")
+		fmt.Println(mirage(realDataTwo, puzzle09_2, prepData09), "\n")
 
 	}
 }
