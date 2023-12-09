@@ -57,8 +57,8 @@ func main() {
 		fmt.Println(hauntedWasteland(testDataTwo, travel2, prepData08), "\n")
 		fmt.Println(hauntedWasteland(realDataTwo, travel2, prepData08), "\n")
 	case "09":
-		// fmt.Println(mirage(testDataOne, puzzle09_1, prepData09), "\n")
-		// fmt.Println(mirage(realDataOne, puzzle09_1, prepData09), "\n")
+		fmt.Println(mirage(testDataOne, puzzle09_1, prepData09), "\n")
+		fmt.Println(mirage(realDataOne, puzzle09_1, prepData09), "\n")
 		fmt.Println(mirage(testDataTwo, puzzle09_2, prepData09), "\n")
 		fmt.Println(mirage(realDataTwo, puzzle09_2, prepData09), "\n")
 
