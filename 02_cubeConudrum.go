@@ -1,10 +1,22 @@
 package main
 
 import (
-	"bufio"
 	"regexp"
 	"strconv"
 )
+
+func puzzle02_1(game int, green int, red int, blue int) int {
+	const maxGreen, maxRed, maxBlue int = 13, 12, 14
+
+	if green <= maxGreen && red <= maxRed && blue <= maxBlue {
+		return game
+	}
+	return 0
+}
+
+func puzzle02_2(game int, green int, red int, blue int) int {
+	return green * red * blue
+}
 
 func findMax(text string, patt string) int {
 	pattern := regexp.MustCompile(patt)
@@ -30,33 +42,4 @@ func extractData(text string) (int, int, int, int) {
 	blue := findMax(text, "(\\d+) blue")
 
 	return game, green, red, blue
-}
-
-func cubeConudrum(filename string, calcFun func(int, int, int, int) int) int {
-	f := readFile(filename)
-	defer closeFile(f)
-
-	fileScanner := bufio.NewScanner(f)
-	fileScanner.Split(bufio.ScanLines)
-
-	var result int
-
-	for fileScanner.Scan() {
-		game, green, red, blue := extractData(fileScanner.Text())
-		result += calcFun(game, green, red, blue)
-	}
-	return result
-}
-
-func calcSum(game int, green int, red int, blue int) int {
-	const maxGreen, maxRed, maxBlue int = 13, 12, 14
-
-	if green <= maxGreen && red <= maxRed && blue <= maxBlue {
-		return game
-	}
-	return 0
-}
-
-func calcPower(game int, green int, red int, blue int) int {
-	return green * red * blue
 }

@@ -1,28 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"strconv"
 	"strings"
 )
-
-// Day 04 solution
-func scratchcards(filename string, calcFun func(string, map[int]int) int) int {
-	f := readFile(filename)
-	defer closeFile(f)
-
-	fileScanner := bufio.NewScanner(f)
-
-	var result int
-	mapWins := map[int]int{}
-
-	for fileScanner.Scan() {
-		text := fileScanner.Text()
-		result += calcFun(text, mapWins)
-	}
-
-	return result
-}
 
 // Solve puzzle no 1
 func countWorth(text string, mapWins map[int]int) int {

@@ -1,13 +1,7 @@
 package main
 
-// Day 08 solution
-func hauntedWasteland(filename string, calcFun func(map[string][]string, string) int, prepFun func(data []string) map[string][]string) int {
-	input, path := readInput08(filename, prepFun)
-	return calcFun(input, path)
-}
-
 // Solve puzzle no 1
-func travel1(input map[string][]string, commands string) int {
+func puzzle08_1(input map[string][]string, commands string) int {
 	if input == nil || commands == "" {
 		return 0
 	}
@@ -46,7 +40,7 @@ func goSingleRound(input map[string][]string, commands string, lastNode string) 
 }
 
 // Solve puzzle no 2
-func travel2(input map[string][]string, commands string) int {
+func puzzle08_2(input map[string][]string, commands string) int {
 	if input == nil || commands == "" {
 		return 0
 	}

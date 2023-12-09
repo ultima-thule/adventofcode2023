@@ -10,14 +10,8 @@ type game struct {
 	power int
 }
 
-// Day 07 solution
-func camelCards(filename string, calcFun func([]game, bool) int, prepFun func(data []string) []game, useJoker bool) int {
-	input := readInput07(filename, prepFun)
-	return calcFun(input, useJoker)
-}
-
 // Solve puzzle no 1 && 2
-func playGame(input []game, useJoker bool) int {
+func puzzle07(input []game, useJoker bool) int {
 	if input == nil {
 		return 0
 	}

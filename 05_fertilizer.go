@@ -12,15 +12,8 @@ type destination struct {
 	offset   int
 }
 
-// Day 04 solution
-func fertilizer(filename string, calcFun func([]string) int, prepFun func(data []string) []string) int {
-	input := readInput(filename, calcFun, prepFun)
-
-	return calcFun(input)
-}
-
 // Solve puzzle no 1
-func puzzle1(input []string) int {
+func puzzle05_1(input []string) int {
 	defer timeTrack(time.Now(), "part 1")
 
 	var res int = -1
@@ -71,7 +64,7 @@ func parseRange(line string) (int, int, int) {
 }
 
 // Solve puzzle no 2
-func puzzle2(input []string) int {
+func puzzle05_2(input []string) int {
 	defer timeTrack(time.Now(), "part 2")
 
 	var res int = -1

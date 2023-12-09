@@ -4,15 +4,8 @@ import (
 	"strings"
 )
 
-// Day 04 solution
-func waitForIt(filename string, calcFun func([]string) int, prepFun func(data []string) []string) int {
-	input := readInput(filename, calcFun, prepFun)
-
-	return calcFun(input)
-}
-
 // Solve puzzle no 1 & 2
-func race(input []string) int {
+func puzzle06(input []string) int {
 	if input == nil || len(input) < 2 {
 		return 0
 	}

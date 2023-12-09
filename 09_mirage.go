@@ -1,28 +1,5 @@
 package main
 
-import (
-	"bufio"
-	"time"
-)
-
-// Day 08 solution
-func mirage(filename string, calcFun func([]int) int, prepFun func(string) []int) int {
-	f := readFile(filename)
-	defer closeFile(f)
-
-	fileScanner := bufio.NewScanner(f)
-
-	var result int
-
-	for fileScanner.Scan() {
-		text := fileScanner.Text()
-		result += calcFun(prepFun(text))
-	}
-	defer timeTrack(time.Now(), "mirage")
-
-	return result
-}
-
 // Solve puzzle no 1
 func puzzle09_1(input []int) int {
 	if input == nil {

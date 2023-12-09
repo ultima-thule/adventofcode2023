@@ -1,31 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"strings"
 	"unicode"
 )
-
-func gearRatios(filename string, calcFun func([]string) int) int {
-	f := readFile(filename)
-	defer closeFile(f)
-
-	fileScanner := bufio.NewScanner(f)
-
-	var result int
-	var schema []string
-
-	for fileScanner.Scan() {
-		text := fileScanner.Text()
-		schema = prepareData(schema, text, false)
-		result += calcFun(schema)
-	}
-	// last row
-	schema = prepareData(schema, "", true)
-	result += calcFun(schema)
-
-	return result
-}
 
 func prepareData(schema []string, text string, isLast bool) []string {
 	if len(schema) == 0 {

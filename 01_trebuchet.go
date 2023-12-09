@@ -1,30 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"strings"
 )
-
-func trebuchet(filename string, version int) int {
-	f := readFile(filename)
-	defer closeFile(f)
-
-	fileScanner := bufio.NewScanner(f)
-	fileScanner.Split(bufio.ScanLines)
-
-	var first, last, result int
-
-	for fileScanner.Scan() {
-		if version == 1 {
-			first, last = parseDigitsOnly(fileScanner.Text())
-		} else {
-			first, last = parseDigitsMixed(fileScanner.Text())
-		}
-		result += first*10 + last
-	}
-
-	return result
-}
 
 func parseDigitsOnly(text string) (int, int) {
 	var first, last int
