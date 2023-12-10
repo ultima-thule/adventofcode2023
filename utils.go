@@ -215,7 +215,7 @@ func readInput10(filename string) ([]string, Point) {
 				pos.y = ind[0][0]
 			}
 		}
-
+		fmt.Println(txt)
 		input = append(input, txt)
 	}
 
