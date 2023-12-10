@@ -5,6 +5,12 @@ import (
 	"time"
 )
 
+// Day 10 solution
+func pipeMaze(filename string, calcFun func([]string, Point) int) int {
+	input, pos := readInput10(filename)
+	return calcFun(input, pos)
+}
+
 // Day 09 solution
 func mirage(filename string, calcFun func([]int) int, prepFun func(string) []int) int {
 	f := readFile(filename)

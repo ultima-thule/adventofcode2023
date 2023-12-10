@@ -61,6 +61,12 @@ func main() {
 		fmt.Println(mirage(realDataOne, puzzle09_1, prepData09))
 		fmt.Println(mirage(testDataTwo, puzzle09_2, prepData09))
 		fmt.Println(mirage(realDataTwo, puzzle09_2, prepData09))
+	case "10":
+		fmt.Println(pipeMaze(testDataOne, puzzle10_1))
+		fmt.Println(pipeMaze(testDataTwo, puzzle10_1))
+		fmt.Println(pipeMaze(realDataOne, puzzle10_1))
+		// fmt.Println(pipeMaze(testDataTwo, puzzle10_2))
+		// fmt.Println(pipeMaze(realDataTwo, puzzle10_2))
 
 	}
 }

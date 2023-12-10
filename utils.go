@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -191,4 +192,32 @@ func timeTrack(start time.Time, name string) {
 
 func prepData09(input string) []int {
 	return splitToInts(input)
+}
+
+func readInput10(filename string) ([]string, Point) {
+	f := readFile(filename)
+	defer closeFile(f)
+
+	fileScanner := bufio.NewScanner(f)
+
+	input := []string{}
+	pos := Point{x: -1, y: -1}
+
+	for fileScanner.Scan() {
+		txt := fileScanner.Text()
+		// fmt.Println(txt)
+		if pos.y == -1 {
+			pos.x++
+			var startPos string = `S`
+			sent := regexp.MustCompile(startPos)
+			ind := sent.FindAllStringIndex(txt, 1)
+			if len(ind) > 0 {
+				pos.y = ind[0][0]
+			}
+		}
+
+		input = append(input, txt)
+	}
+
+	return input, pos
 }
