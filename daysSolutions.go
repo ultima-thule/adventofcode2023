@@ -2,8 +2,27 @@ package main
 
 import (
 	"bufio"
+	"log"
+	"os"
 	"time"
 )
+
+// Day 11 solution
+func cosmic(filename string, calcFun func([][]byte) int) int {
+	// Read the contents of the file
+	contentBytes, err := os.ReadFile(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	content := string(contentBytes)
+	grid := parseInputIntoBytes(content)
+
+	res := calcFun(grid)
+
+	defer timeTrack(time.Now(), "cosmic")
+
+	return res
+}
 
 // Day 10 solution
 func pipeMaze(filename string, calcFun func([]string, Point) int) int {

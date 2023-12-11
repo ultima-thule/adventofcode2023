@@ -221,3 +221,13 @@ func readInput10(filename string) ([]string, Point) {
 
 	return input, pos
 }
+
+func parseInputIntoBytes(input string) [][]byte {
+	splitted := strings.Split(input, "\n")
+	grid := make([][]byte, len(splitted))
+	for i := range splitted {
+		grid[i] = []byte(splitted[i])
+	}
+
+	return grid
+}
