@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"regexp"
+)
 
 type Point struct {
 	x int
@@ -32,6 +35,35 @@ func puzzle10_1(input []string, start Point) int {
 	corners = append(corners, Point{x: start.x, y: start.y})
 
 	return len(visited) / 2
+}
+
+func puzzle10_3(input []string, start Point) int {
+	// fmt.Println("Start:", start)
+
+	points := findStartConnections(start, input)
+
+	if len(points) != 2 {
+		return 0
+	}
+
+	visited := make(map[string]bool, 0)
+	conc := fmt.Sprintf("%d_%d", points[0].x, points[0].y)
+	visited[conc] = true
+	conc = fmt.Sprintf("%d_%d", start.x, start.y)
+	visited[conc] = true
+
+	corners := make([]Point, 0)
+	corners = append(corners, Point{x: start.x, y: start.y})
+	corners = append(corners, Point{x: points[0].x, y: points[0].y})
+
+	followMaze2(points[0], start, visited, &corners, input)
+
+	corners = append(corners, Point{x: start.x, y: start.y})
+
+	res := drawLR(input, corners, visited)
+	fmt.Println()
+
+	return res
 }
 
 // Solve puzzle no 2
@@ -69,7 +101,8 @@ func puzzle10_2(input []string, start Point) int {
 
 	// res := calcCrosses(input, output)
 	// output = drawO(output, visited)
-	res := drawLR(output, corners, visited)
+	// res := drawLR(output, corners, visited)
+	res := drawLR(input, corners, visited)
 
 	// inner := make(map[string]bool, 0)
 	// fillInner(Point{start.x + 1, start.y + 1}, output, inner)
@@ -158,6 +191,31 @@ func followMaze(start Point, end Point, visited map[string]bool, corners *[]Poin
 			*corners = append(*corners, Point{x: conn[i].x, y: conn[i].y})
 
 			followMaze(conn[i], end, visited, corners, input)
+		}
+	}
+}
+
+func followMaze2(start Point, end Point, visited map[string]bool, corners *[]Point, input []string) {
+	// fmt.Println("\n- Entered ", start)
+	// reached the start point
+	if start.x == end.x && start.y == end.y {
+		return
+	}
+
+	// fmt.Println("Follow ", start, "visited: ", visited)
+
+	conn := findConnections(start, input)
+	// fmt.Println("Found:", conn)
+	for i := 0; i < len(conn); i++ {
+		p := fmt.Sprintf("%d_%d", conn[i].x, conn[i].y)
+		if !visited[p] {
+			// fmt.Println("Following:", p)
+			// fmt.Println("Not visited: ", conc, "\n")
+			// fmt.Println("=> ", conn[i].x, ",", conn[i].y)
+			visited[p] = true
+			*corners = append(*corners, Point{x: conn[i].x, y: conn[i].y})
+
+			followMaze2(conn[i], end, visited, corners, input)
 		}
 	}
 }
@@ -310,85 +368,133 @@ func drawLR(input []string, corners []Point, borderMap map[string]bool) int {
 	// prevMove := ""
 	// nextMove := ""
 
-	isFirst := true
+	// fmt.Println(corners)
 
-	for i := 0; i < len(corners)-1; i++ {
+	for i := 0; i < len(corners); i++ {
 		p := corners[i]
-		n := corners[i+1]
+		var n Point
+		if i == len(corners)-1 {
+			n = corners[1]
+			// fmt.Print("Last!", p, n)
+		} else {
+			n = corners[i+1]
+		}
+
+		c := string(input[p.x][p.y])
+		dir := ""
+		if i == len(corners)-1 {
+			if c == "S" {
+				c_prev := string(input[corners[i-1].x][corners[i-1].y])
+				c_next := string(input[n.x][n.y])
+				// fmt.Println("START ", c_prev, c_next)
+
+				if c_prev == "-" && (c_next == "|" || c_next == "L" || c_next == "J") {
+					dir = "L"
+				} else if c_prev == "-" || c_next == "|" {
+					dir = "D"
+				}
+			}
+			// fmt.Println("C: ", c, " dir: ", dir)
+		} else {
+			if p.x == n.x {
+				if p.y < n.y {
+					dir = "R"
+				} else {
+					dir = "L"
+				}
+			} else {
+				if p.x < n.x {
+					dir = "D"
+				} else {
+					dir = "U"
+				}
+			}
+		}
+
+		markLeft := make([]Point, 0)
+		markRight := make([]Point, 0)
+
+		if c == "|" {
+			if dir == "D" {
+				markLeft = append(markLeft, Point{p.x, p.y + 1})
+				markRight = append(markRight, Point{p.x, p.y - 1})
+			} else if dir == "U" {
+				markLeft = append(markLeft, Point{p.x, p.y - 1})
+				markRight = append(markRight, Point{p.x, p.y + 1})
+			}
+		} else if c == "-" {
+			if dir == "R" {
+				markLeft = append(markLeft, Point{p.x - 1, p.y})
+				markRight = append(markRight, Point{p.x + 1, p.y})
+			} else if dir == "L" {
+				markLeft = append(markLeft, Point{p.x + 1, p.y})
+				markRight = append(markRight, Point{p.x - 1, p.y})
+			}
+		} else if c == "L" {
+			if dir == "R" {
+				markLeft = append(markLeft, Point{p.x - 1, p.y + 1})
+				markRight = append(markRight, Point{p.x, p.y - 1})
+				markRight = append(markRight, Point{p.x + 1, p.y - 1})
+				markRight = append(markRight, Point{p.x + 1, p.y})
+			} else if dir == "U" {
+				markRight = append(markRight, Point{p.x - 1, p.y + 1})
+				markLeft = append(markLeft, Point{p.x, p.y - 1})
+				markLeft = append(markLeft, Point{p.x + 1, p.y - 1})
+				markLeft = append(markLeft, Point{p.x + 1, p.y})
+			}
+		} else if c == "J" {
+			if dir == "U" {
+				markLeft = append(markLeft, Point{p.x - 1, p.y - 1})
+				markRight = append(markRight, Point{p.x, p.y + 1})
+				markRight = append(markRight, Point{p.x + 1, p.y + 1})
+				markRight = append(markRight, Point{p.x + 1, p.y})
+			} else if dir == "L" {
+				markRight = append(markRight, Point{p.x - 1, p.y - 1})
+				markLeft = append(markLeft, Point{p.x, p.y + 1})
+				markLeft = append(markLeft, Point{p.x + 1, p.y + 1})
+				markLeft = append(markLeft, Point{p.x + 1, p.y})
+			}
+		} else if c == "F" {
+			if dir == "D" {
+				markLeft = append(markLeft, Point{p.x + 1, p.y + 1})
+				markRight = append(markRight, Point{p.x, p.y - 1})
+				markRight = append(markRight, Point{p.x - 1, p.y - 1})
+				markRight = append(markRight, Point{p.x - 1, p.y})
+			} else if dir == "R" {
+				markRight = append(markRight, Point{p.x + 1, p.y + 1})
+				markLeft = append(markLeft, Point{p.x, p.y - 1})
+				markLeft = append(markLeft, Point{p.x - 1, p.y - 1})
+				markLeft = append(markLeft, Point{p.x - 1, p.y})
+			}
+		} else if c == "7" {
+			if dir == "L" {
+				markLeft = append(markLeft, Point{p.x + 1, p.y - 1})
+				markRight = append(markRight, Point{p.x, p.y + 1})
+				markRight = append(markRight, Point{p.x - 1, p.y + 1})
+				markRight = append(markRight, Point{p.x - 1, p.y})
+			} else if dir == "U" {
+				markRight = append(markRight, Point{p.x + 1, p.y - 1})
+				markLeft = append(markLeft, Point{p.x, p.y + 1})
+				markLeft = append(markLeft, Point{p.x - 1, p.y + 1})
+				markLeft = append(markLeft, Point{p.x - 1, p.y})
+			}
+		}
 
 		// fmt.Println("Point:", p, " next: ", n)
 
-		markLeft := make([]Point, 3)
-		markRight := make([]Point, 3)
-
-		// prevMove = nextMove
-
-		if n.y == p.y+1 {
-			// move right horizontally
-			// nextMove = "R"
-			// fmt.Println("=>")
-			markLeft[0] = Point{p.x - 1, p.y - 1}
-			markLeft[1] = Point{p.x - 1, p.y}
-			markLeft[2] = Point{p.x - 1, p.y + 1}
-
-			markRight[0] = Point{p.x + 1, p.y - 1}
-			markRight[1] = Point{p.x + 1, p.y}
-			markRight[2] = Point{p.x + 1, p.y + 1}
-
-			// fmt.Println("L:", left, "R:", right)
-		} else if n.x == p.x+1 {
-			// move down vertically OK
-			// nextMove = "D"
-			// fmt.Println("V")
-
-			markLeft[0] = Point{p.x, p.y + 1}
-			markLeft[1] = Point{p.x + 1, p.y + 1}
-
-			markRight[0] = Point{p.x - 1, p.y - 1}
-			markRight[1] = Point{p.x, p.y - 1}
-			if !isFirst {
-				markLeft[2] = Point{p.x - 1, p.y + 1}
-				markRight[2] = Point{p.x + 1, p.y - 1}
-				isFirst = false
-
-			}
-
-		} else if n.y == p.y-1 {
-			// move left horizontally
-			// nextMove = "L"
-			// fmt.Println("<=")
-
-			markLeft[0] = Point{p.x + 1, p.y - 1}
-			markLeft[1] = Point{p.x + 1, p.y}
-			markLeft[2] = Point{p.x + 1, p.y + 1}
-
-			markRight[0] = Point{p.x - 1, p.y - 1}
-			markRight[1] = Point{p.x - 1, p.y}
-			markRight[2] = Point{p.x - 1, p.y + 1}
-
-			// fmt.Println("L:", left, "R:", right)
-		} else if n.x == p.x-1 {
-			// move up vertically OK
-			// nextMove = "U"
-			// fmt.Println("I")
-			// fmt.Println("L:", left, "R:", right)
-			markLeft[0] = Point{p.x - 1, p.y - 1}
-			markLeft[1] = Point{p.x, p.y - 1}
-			markLeft[2] = Point{p.x + 1, p.y - 1}
-
-			markRight[0] = Point{p.x - 1, p.y + 1}
-			markRight[1] = Point{p.x, p.y + 1}
-			markRight[2] = Point{p.x + 1, p.y + 1}
-		}
-
-		// fmt.Println("-- left: ", left)
-		// fmt.Println("-- right: ", right)
+		// fmt.Println("-- left: ", markLeft)
+		// fmt.Println("-- right: ", markRight)
 
 		for i := 0; i < len(markRight); i++ {
 			// fmt.Println("RP:", markRight[i])
 			if conc := isValidPoint(markRight[i], maxX, maxY); conc != "" {
 				// if right.x >= 0 && right.x < len(input) && right.y >= 0 && right.y < len(input[0]) {
+
 				if borderMap[conc] == false && leftPoints[conc] == false {
+					if markRight[i].x == 0 && markRight[i].y == 0 {
+						// fmt.Println("TUTAJ: ", c, " dir: ", dir)
+					}
+
 					rightPoints[conc] = true
 				}
 			}
@@ -404,6 +510,9 @@ func drawLR(input []string, corners []Point, borderMap map[string]bool) int {
 		}
 
 	}
+
+	// fmt.Println("LP: ", leftPoints)
+	// fmt.Println("RP: ", rightPoints)
 
 	resL, resR := calcInside(input, leftPoints, rightPoints)
 	res := min(resL, resR)
@@ -602,6 +711,9 @@ func calcInside(input []string, pointsLeft map[string]bool, pointsRight map[stri
 	countL := 0
 	countR := 0
 
+	cL := 0
+	cR := 0
+
 	for i := 0; i < len(input); i++ {
 		row := ""
 
@@ -620,8 +732,10 @@ func calcInside(input []string, pointsLeft map[string]bool, pointsRight map[stri
 			row += curr
 		}
 		// fmt.Println(row)
-		countL += convertRow(row, "O")
-		// countR += convertRow(row, "+")
+		cL = convertRow(row, "O", "+")
+		cR = convertRow(row, "+", "O")
+		countL += cL
+		countR += cR
 	}
 
 	fmt.Println()
@@ -631,8 +745,8 @@ func calcInside(input []string, pointsLeft map[string]bool, pointsRight map[stri
 	return countL, countR
 }
 
-func convertRow(input string, letter string) int {
-	// fmt.Println("TODO:", input)
+func convertRow(input string, letter string, secLet string) int {
+	fmt.Println("TODO:", input)
 
 	count := 0
 	row := ""
@@ -657,6 +771,29 @@ func convertRow(input string, letter string) int {
 		row += curr
 	}
 
-	fmt.Println(row)
+	fmt.Println("DONE:", row)
 	return count
+}
+
+func convertRow2(input string, letter string, secLet string) int {
+	fmt.Println("TODO:", input)
+	cnt := 0
+
+	pattern := regexp.MustCompile("([.+][O][.+])")
+	matches := pattern.FindAllStringSubmatch(input, -1)
+	for _, v := range matches {
+		fmt.Println(v)
+		cnt++
+	}
+
+	pattern = regexp.MustCompile("([O]+[.]*[O]+)")
+	matches = pattern.FindAllStringSubmatch(input, -1)
+	for _, v := range matches {
+		fmt.Println(v)
+		cnt++
+	}
+
+	fmt.Println("CNT: ", cnt)
+
+	return cnt
 }
