@@ -231,3 +231,14 @@ func parseInputIntoBytes(input string) [][]byte {
 
 	return grid
 }
+
+func distance(p1 Point, p2 Point) int {
+	return abs(p2.y-p1.y) + abs(p2.x-p1.x)
+}
+
+func abs(n int) int {
+	if n < 0 {
+		return -n
+	}
+	return n
+}

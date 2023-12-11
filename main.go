@@ -74,11 +74,11 @@ func main() {
 		fmt.Println(part2(realInput2))
 		// fmt.Println(pipeMaze(realDataTwo, puzzle10_3))
 	case "11":
-		fmt.Println(cosmic(testDataOne, puzzle11_1, 2))
-		fmt.Println(cosmic(realDataOne, puzzle11_1, 2))
-		fmt.Println(cosmic(testDataTwo, puzzle11_1, 10))
-		fmt.Println(cosmic(testDataTwo, puzzle11_1, 100))
-		fmt.Println(cosmic(realDataTwo, puzzle11_1, 1000000))
+		fmt.Println(cosmic(testDataOne, puzzle11, 2))
+		fmt.Println(cosmic(realDataOne, puzzle11, 2))
+		// fmt.Println(cosmic(testDataTwo, puzzle11_1, 10))
+		// fmt.Println(cosmic(testDataTwo, puzzle11_1, 100))
+		fmt.Println(cosmic(realDataTwo, puzzle11, 1000000))
 
 	}
 }

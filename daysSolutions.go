@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -10,6 +11,8 @@ import (
 // Day 11 solution
 func cosmic(filename string, calcFun func([][]byte, int) int, expRate int) int {
 	// Read the contents of the file
+	fmt.Println("=> DataSet: ", filename)
+
 	contentBytes, err := os.ReadFile(filename)
 	if err != nil {
 		log.Fatal(err)
@@ -20,6 +23,7 @@ func cosmic(filename string, calcFun func([][]byte, int) int, expRate int) int {
 	res := calcFun(grid, expRate)
 
 	defer timeTrack(time.Now(), "cosmic")
+	fmt.Println()
 
 	return res
 }
