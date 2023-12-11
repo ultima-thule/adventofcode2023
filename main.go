@@ -75,7 +75,7 @@ func main() {
 		// fmt.Println(pipeMaze(realDataTwo, puzzle10_3))
 	case "11":
 		fmt.Println(cosmic(testDataOne, puzzle11_1))
-		// fmt.Println(mirage(realDataOne, puzzle11_1, prepData09))
+		fmt.Println(cosmic(realDataOne, puzzle11_1))
 		// fmt.Println(mirage(testDataTwo, puzzle11_2, prepData09))
 		// fmt.Println(mirage(realDataTwo, puzzle11_2, prepData09))
 

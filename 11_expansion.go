@@ -33,12 +33,9 @@ func puzzle11_1(input [][]byte) int {
 
 	// fmt.Println("Galaxies:", galaxies)
 	// fmt.Println("Rows:", foundRows)
-	fmt.Println("Cols:", foundCols)
+	// fmt.Println("Cols:", foundCols)
 
 	// printGalaxy(galaxies, 20, 20)
-
-	// for k, v := range galaxies {
-	// }
 
 	started := 0
 	for i := 0; i < len(foundCols); i++ {
@@ -56,19 +53,22 @@ func puzzle11_1(input [][]byte) int {
 		}
 	}
 	maxCols := len(input[0]) + started
-	fmt.Println("Cols:", foundCols, "maxCols:", maxCols)
+	// fmt.Println("Cols:", foundCols, "maxCols:", maxCols)
 
 	newGal := make(map[string]bool, 0)
-	fmt.Println("Gals:", galaxies)
+	// fmt.Println("Gals:", galaxies)
+	expanded := make([]Point, 0)
 
 	for k := range galaxies {
 		var r, c int
 		fmt.Sscanf(k, "%d_%d", &r, &c)
 		key := fmt.Sprintf("%d_%d", r, c+foundCols[c])
 		newGal[key] = true
+		expanded = append(expanded, Point{x: r, y: c + foundCols[c]})
 	}
 
-	fmt.Println("Gals:", newGal)
+	// fmt.Println("Gals:", newGal)
+	fmt.Println("Gals:", expanded)
 
 	// for k := range galaxies {
 	// 	var r, c int
@@ -87,25 +87,10 @@ func puzzle11_1(input [][]byte) int {
 
 	// expandCosmos(&grid)
 
+	res, _ = findAllDistances(expanded)
+
 	return res
 }
-
-// func expandCosmos(grid *[][]byte) {
-
-// 	res := make([][]byte, 0)
-
-// 	for
-
-// }
-
-// func insert(a [][]byte, index int, value []byte) []int {
-// 	if len(a) == index { // nil or empty slice or after last element
-// 		return append(a, value)
-// 	}
-// 	a = append(a[:index+1], a[index:]...) // index < len(a)
-// 	a[index] = value
-// 	return a
-// }
 
 func printGalaxy(input map[string]bool, maxRows int, maxCols int) {
 	for i := 0; i < maxRows; i++ {
@@ -120,4 +105,34 @@ func printGalaxy(input map[string]bool, maxRows int, maxCols int) {
 		}
 		fmt.Printf("\n")
 	}
+}
+
+func findAllDistances(galaxy []Point) (int, map[string]int) {
+	distances := make(map[string]int)
+	count := 0
+
+	for i := 0; i < len(galaxy); i++ {
+		for j := i + 1; j < len(galaxy); j++ {
+			dist := distance(galaxy[i], galaxy[j])
+			k := fmt.Sprintf("%d_%d", i, j)
+			distances[k] = dist
+			count += dist
+		}
+	}
+
+	fmt.Println("Distances:", distances)
+	fmt.Println("Count:", count)
+
+	return count, distances
+}
+
+func distance(p1 Point, p2 Point) int {
+	return abs(p2.y-p1.y) + abs(p2.x-p1.x)
+}
+
+func abs(n int) int {
+	if n < 0 {
+		return -n
+	}
+	return n
 }
