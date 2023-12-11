@@ -5,7 +5,7 @@ import (
 )
 
 // Solve puzzle no 1
-func puzzle11_1(input [][]byte) int {
+func puzzle11_1(input [][]byte, expRate int) int {
 	var res int = 0
 
 	foundRows := make(map[int]bool, 0)
@@ -26,10 +26,10 @@ func puzzle11_1(input [][]byte) int {
 		}
 		// expand rows
 		if !foundStar {
-			addRows++
+			addRows += (expRate - 1)
 		}
 	}
-	maxRows := len(input) + addRows
+	// maxRows := len(input) + addRows
 
 	// fmt.Println("Galaxies:", galaxies)
 	// fmt.Println("Rows:", foundRows)
@@ -37,23 +37,23 @@ func puzzle11_1(input [][]byte) int {
 
 	// printGalaxy(galaxies, 20, 20)
 
-	started := 0
+	rolling := 0
 	for i := 0; i < len(foundCols); i++ {
-		if foundCols[i] == 1 && started == 0 {
+		if foundCols[i] == 1 && rolling == 0 {
 			foundCols[i] = 0
 			continue
 		}
 		if foundCols[i] == 0 {
-			started++
+			rolling += (expRate - 1)
 			for j := i + 1; j < len(foundCols); j++ {
 				if foundCols[j] != 0 {
-					foundCols[j] = started
+					foundCols[j] = rolling
 				}
 			}
 		}
 	}
-	maxCols := len(input[0]) + started
-	// fmt.Println("Cols:", foundCols, "maxCols:", maxCols)
+	maxCols := len(input[0]) + rolling
+	fmt.Println("Cols:", foundCols, "maxCols2:", maxCols)
 
 	newGal := make(map[string]bool, 0)
 	// fmt.Println("Gals:", galaxies)
@@ -68,7 +68,7 @@ func puzzle11_1(input [][]byte) int {
 	}
 
 	// fmt.Println("Gals:", newGal)
-	fmt.Println("Gals:", expanded)
+	// fmt.Println("Gals:", expanded)
 
 	// for k := range galaxies {
 	// 	var r, c int
@@ -76,14 +76,14 @@ func puzzle11_1(input [][]byte) int {
 	// 	galMap = append(galMap, Point{x: r, y: c})
 	// }
 
-	fmt.Println()
-	fmt.Println("Galaxies:", newGal)
+	// fmt.Println()
+	// fmt.Println("Galaxies:", newGal)
 	// fmt.Println("Rows:", foundRows)
 	// fmt.Println("Cols:", foundCols)
 
-	printGalaxy(galaxies, len(input), len(input[0]))
+	// printGalaxy(galaxies, len(input), len(input[0]))
 	fmt.Println()
-	printGalaxy(newGal, maxRows, maxCols)
+	// printGalaxy(newGal, maxRows, maxCols)
 
 	// expandCosmos(&grid)
 
@@ -120,8 +120,8 @@ func findAllDistances(galaxy []Point) (int, map[string]int) {
 		}
 	}
 
-	fmt.Println("Distances:", distances)
-	fmt.Println("Count:", count)
+	// fmt.Println("Distances:", distances)
+	// fmt.Println("Count:", count)
 
 	return count, distances
 }

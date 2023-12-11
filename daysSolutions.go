@@ -8,7 +8,7 @@ import (
 )
 
 // Day 11 solution
-func cosmic(filename string, calcFun func([][]byte) int) int {
+func cosmic(filename string, calcFun func([][]byte, int) int, expRate int) int {
 	// Read the contents of the file
 	contentBytes, err := os.ReadFile(filename)
 	if err != nil {
@@ -17,7 +17,7 @@ func cosmic(filename string, calcFun func([][]byte) int) int {
 	content := string(contentBytes)
 	grid := parseInputIntoBytes(content)
 
-	res := calcFun(grid)
+	res := calcFun(grid, expRate)
 
 	defer timeTrack(time.Now(), "cosmic")
 
