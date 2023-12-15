@@ -9,6 +9,32 @@ import (
 	"time"
 )
 
+// solution day 13
+func points(filename string, calcData func([]int64, []int64) int) int {
+	f := readFile(filename)
+	defer closeFile(f)
+
+	fileScanner := bufio.NewScanner(f)
+
+	res := 0
+
+	input := make([]string, 0)
+	for fileScanner.Scan() {
+		t := fileScanner.Text()
+		if t == "" {
+			dataRow, dataCol := prepData13(input)
+			res += calcData(dataRow, dataCol)
+			input = make([]string, 0)
+		} else {
+			input = append(input, t)
+		}
+	}
+	dataRow, dataCol := prepData13(input)
+	res += calcData(dataRow, dataCol)
+
+	return res
+}
+
 func lens(filename string, puzzle func(string) int) int {
 	f := readFile(filename)
 	defer closeFile(f)

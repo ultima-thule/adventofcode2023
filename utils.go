@@ -260,3 +260,16 @@ func printTilt(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows in
 		fmt.Print("\n")
 	}
 }
+
+func transposeMatrix(input []string) []string {
+	ret := make([]string, len(input[0]))
+
+	for i := 0; i < len(input); i++ {
+		t := input[i]
+		for j := 0; j < len(t); j++ {
+			ret[j] = ret[j] + string(t[j])
+		}
+	}
+
+	return ret
+}

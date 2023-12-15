@@ -86,17 +86,15 @@ func main() {
 		// fmt.Println(cosmic(testDataTwo, puzzle11_1, 100))
 		// fmt.Println(cosmic(realDataTwo, puzzle11, 1000000))
 	case "13":
-		// fmt.Println(points(testDataOne))
-		// fmt.Println(points(realDataOne, puzzle13))
-		// fmt.Println(points2(testDataOne))
+		fmt.Println(points(testDataOne, puzzle13))
+		fmt.Println(points(realDataOne, puzzle13))
 		fmt.Println(points(testDataOne, puzzle13_2))
-		sol13(testDataOne)
-		// fmt.Println(points(realDataTwo, puzzle13_2))
-		// sol13(realDataTwo)
+		fmt.Println(points(realDataTwo, puzzle13_2))
 	case "14":
 		// fmt.Println(tilt(testDataOne))
-		fmt.Println(tilt(realDataOne))
-		// fmt.Println(points(realDataTwo, puzzle13_2))
+		// fmt.Println(tilt(realDataOne, puzzle14))
+		fmt.Println(tilt(testDataOne, puzzle14_2))
+		fmt.Println(tilt(realDataTwo, puzzle14_2))
 		// sol13(realDataTwo)
 	case "15":
 		fmt.Println(lens(testDataOne, puzzle15))
