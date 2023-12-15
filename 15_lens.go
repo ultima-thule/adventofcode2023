@@ -39,7 +39,7 @@ func moveLenses(paramsMap map[string]string, lenses *[][]Lens) {
 
 	switch cmd {
 	case "=":
-		focal := convert((foc))
+		focal := convert(foc)
 		newLens := Lens{label: lab, focal: focal}
 
 		idx := lensIndex(lenses, box, lab)
