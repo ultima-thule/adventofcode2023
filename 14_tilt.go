@@ -3,9 +3,10 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"sort"
 )
 
-func tilt(filename string) int {
+func tilt(filename string, calcFunc func(map[string]bool, map[string]bool, int, int) int) int {
 	f := readFile(filename)
 	defer closeFile(f)
 
@@ -18,7 +19,7 @@ func tilt(filename string) int {
 		input = append(input, fileScanner.Text())
 	}
 	roundRocks, cubeRocks, maxRows, maxCols := prepData14(input)
-	res += puzzle14(roundRocks, cubeRocks, maxRows, maxCols)
+	res += calcFunc(roundRocks, cubeRocks, maxRows, maxCols)
 
 	return res
 }
@@ -46,73 +47,67 @@ func prepData14(input []string) (map[string]bool, map[string]bool, int, int) {
 
 // Solve puzzle no 14
 func puzzle14(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows int, maxCols int) int {
-	printTilt(roundRocks, cubeRocks, maxRows, maxCols)
+	// printTilt(roundRocks, cubeRocks, maxRows, maxCols)
 
-	// mapNorth := make(map[string]map[string]bool, 0)
-	// mapSouth := make(map[string]map[string]bool, 0)
-	// mapEast := make(map[string]map[string]bool, 0)
-	// mapWest := make(map[string]map[string]bool, 0)
+	moveNorth(roundRocks, cubeRocks, maxRows, maxCols)
+	return countLoad(roundRocks, maxRows, maxCols)
+}
 
-	for i := 0; i < 1000000000; i++ {
-		fmt.Println(i)
+// Solve puzzle no 14 part 2
+func puzzle14_2(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows int, maxCols int) int {
+	// printTilt(roundRocks, cubeRocks, maxRows, maxCols)
 
-		// fmt.Println()
-		// fmt.Println("NORTH")
-		// transformata := mapNorth[fmt.Sprint(roundRocks)]
-		// if transformata == nil {
+	cycleLen := 0
+	it := 0
+
+	visited := make(map[string]int, 0)
+
+	for {
 		moveNorth(roundRocks, cubeRocks, maxRows, maxCols)
-		// 	mapNorth[tmp] = copy()
-		// }
-		// else {
-		// 	roundRocks = transformata
-		// }
-		// printTilt(roundRocks, cubeRocks, maxRows, maxCols)
-		// fmt.Println()
-
-		// fmt.Println("WEST")
 		moveWest(roundRocks, cubeRocks, maxRows, maxCols)
-		// mapWest[tmp] = fmt.Sprint(roundRocks)
-		// printTilt(roundRocks, cubeRocks, maxRows, maxCols)
-		// fmt.Println()
-
-		// fmt.Println("SOUTH")
 		moveSouth(roundRocks, cubeRocks, maxRows, maxCols)
-		// mapSouth[tmp] = fmt.Sprint(roundRocks)
-		// printTilt(roundRocks, cubeRocks, maxRows, maxCols)
-		// fmt.Println()
-
-		// fmt.Println("EAST")
 		moveEast(roundRocks, cubeRocks, maxRows, maxCols)
-		// mapEast[tmp] = fmt.Sprint(roundRocks)
-		// fmt.Println()
-		// printTilt(roundRocks, cubeRocks, maxRows, maxCols)
+		it++
+
+		hash := getHash(roundRocks)
+
+		if visited[hash] != 0 {
+			cycleLen = it - visited[hash]
+			break
+		} else {
+			visited[hash] = it
+		}
+	}
+
+	modulo := (1000000000 - it) % cycleLen
+
+	for i := 0; i < modulo; i++ {
+		moveNorth(roundRocks, cubeRocks, maxRows, maxCols)
+		moveWest(roundRocks, cubeRocks, maxRows, maxCols)
+		moveSouth(roundRocks, cubeRocks, maxRows, maxCols)
+		moveEast(roundRocks, cubeRocks, maxRows, maxCols)
 	}
 
 	return countLoad(roundRocks, maxRows, maxCols)
 }
 
-func compareMaps(map1 map[string]bool, map2 map[string]bool) bool {
-	return fmt.Sprint(map1) == fmt.Sprint(map2)
-}
-
-func printTilt(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows int, maxCols int) {
-	for r := 0; r < maxRows; r++ {
-		for c := 0; c < maxCols; c++ {
-			key := fmt.Sprintf("%d_%d", r, c)
-			if cubeRocks[key] {
-				fmt.Print("#")
-				continue
-			}
-			if roundRocks[key] {
-				fmt.Print("O")
-				continue
-			}
-			fmt.Print(".")
-		}
-		fmt.Print("\n")
+// generate  unique hash for map
+func getHash(m map[string]bool) string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
 	}
+
+	sort.Strings(keys)
+
+	res := ""
+	for k := 0; k < len(keys); k++ {
+		res = res + keys[k]
+	}
+	return res
 }
 
+// count load on north
 func countLoad(roundRocks map[string]bool, maxRows int, maxCols int) int {
 	res := 0
 
@@ -124,19 +119,16 @@ func countLoad(roundRocks map[string]bool, maxRows int, maxCols int) int {
 			}
 		}
 	}
-
 	return res
 }
 
 func moveNorth(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows int, maxCols int) {
 	for c := 0; c < maxCols; c++ {
-		// fmt.Println("-- Column #", c)
 		var lastRock int = -1
 		for r := 0; r < maxRows; r++ {
 			key := fmt.Sprintf("%d_%d", r, c)
 			if cubeRocks[key] {
 				lastRock = r
-				// fmt.Println("Hard rock at", key, "last rock", lastRock)
 				continue
 			}
 			if roundRocks[key] {
@@ -144,23 +136,19 @@ func moveNorth(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows in
 				delete(roundRocks, key)
 				roundRocks[key2] = true
 				lastRock += 1
-				// fmt.Println("Moving rock from ", key, "to", key2, "last rock", lastRock)
 				continue
 			}
-			// fmt.Println("No rock at ", key, "last rock", lastRock)
 		}
 	}
 }
 
 func moveSouth(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows int, maxCols int) {
 	for c := 0; c < maxCols; c++ {
-		// fmt.Println("-- Column #", c)
 		var lastRock int = maxRows
 		for r := maxRows - 1; r >= 0; r-- {
 			key := fmt.Sprintf("%d_%d", r, c)
 			if cubeRocks[key] {
 				lastRock = r
-				// fmt.Println("Hard rock at", key, "last rock", lastRock)
 				continue
 			}
 			if roundRocks[key] {
@@ -168,23 +156,19 @@ func moveSouth(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows in
 				delete(roundRocks, key)
 				roundRocks[key2] = true
 				lastRock -= 1
-				// fmt.Println("Moving rock from ", key, "to", key2, "last rock", lastRock)
 				continue
 			}
-			// fmt.Println("No rock at ", key, "last rock", lastRock)
 		}
 	}
 }
 
 func moveWest(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows int, maxCols int) {
 	for r := 0; r < maxRows; r++ {
-		// fmt.Println("-- Column #", c)
 		var lastRock int = -1
 		for c := 0; c < maxCols; c++ {
 			key := fmt.Sprintf("%d_%d", r, c)
 			if cubeRocks[key] {
 				lastRock = c
-				// fmt.Println("Hard rock at", key, "last rock", lastRock)
 				continue
 			}
 			if roundRocks[key] {
@@ -192,23 +176,19 @@ func moveWest(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows int
 				delete(roundRocks, key)
 				roundRocks[key2] = true
 				lastRock += 1
-				// fmt.Println("Moving rock from ", key, "to", key2, "last rock", lastRock)
 				continue
 			}
-			// fmt.Println("No rock at ", key, "last rock", lastRock)
 		}
 	}
 }
 
 func moveEast(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows int, maxCols int) {
 	for r := 0; r < maxRows; r++ {
-		// fmt.Println("-- Column #", c)
 		var lastRock int = maxCols
 		for c := maxCols; c >= 0; c-- {
 			key := fmt.Sprintf("%d_%d", r, c)
 			if cubeRocks[key] {
 				lastRock = c
-				// fmt.Println("Hard rock at", key, "last rock", lastRock)
 				continue
 			}
 			if roundRocks[key] {
@@ -216,10 +196,8 @@ func moveEast(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows int
 				delete(roundRocks, key)
 				roundRocks[key2] = true
 				lastRock -= 1
-				// fmt.Println("Moving rock from ", key, "to", key2, "last rock", lastRock)
 				continue
 			}
-			// fmt.Println("No rock at ", key, "last rock", lastRock)
 		}
 	}
 }

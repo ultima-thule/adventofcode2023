@@ -242,3 +242,21 @@ func abs(n int) int {
 	}
 	return n
 }
+
+func printTilt(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows int, maxCols int) {
+	for r := 0; r < maxRows; r++ {
+		for c := 0; c < maxCols; c++ {
+			key := fmt.Sprintf("%d_%d", r, c)
+			if cubeRocks[key] {
+				fmt.Print("#")
+				continue
+			}
+			if roundRocks[key] {
+				fmt.Print("O")
+				continue
+			}
+			fmt.Print(".")
+		}
+		fmt.Print("\n")
+	}
+}
