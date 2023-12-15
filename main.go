@@ -76,9 +76,32 @@ func main() {
 	case "11":
 		fmt.Println(cosmic(testDataOne, puzzle11, 2))
 		fmt.Println(cosmic(realDataOne, puzzle11, 2))
+		fmt.Println(cosmic(testDataTwo, puzzle11, 10))
+		fmt.Println(cosmic(testDataTwo, puzzle11, 100))
+		fmt.Println(cosmic(realDataTwo, puzzle11, 1000000))
+	case "12":
+		fmt.Println(hotSprings(testDataOne))
+		// fmt.Println(cosmic(realDataOne, puzzle12))
 		// fmt.Println(cosmic(testDataTwo, puzzle11_1, 10))
 		// fmt.Println(cosmic(testDataTwo, puzzle11_1, 100))
-		fmt.Println(cosmic(realDataTwo, puzzle11, 1000000))
-
+		// fmt.Println(cosmic(realDataTwo, puzzle11, 1000000))
+	case "13":
+		// fmt.Println(points(testDataOne))
+		// fmt.Println(points(realDataOne, puzzle13))
+		// fmt.Println(points2(testDataOne))
+		fmt.Println(points(testDataOne, puzzle13_2))
+		sol13(testDataOne)
+		// fmt.Println(points(realDataTwo, puzzle13_2))
+		// sol13(realDataTwo)
+	case "14":
+		// fmt.Println(tilt(testDataOne))
+		fmt.Println(tilt(realDataOne))
+		// fmt.Println(points(realDataTwo, puzzle13_2))
+		// sol13(realDataTwo)
+	case "15":
+		fmt.Println(lens(testDataOne, puzzle15))
+		fmt.Println(lens(realDataOne, puzzle15))
+		fmt.Println(lens_part2(testDataOne))
+		fmt.Println(lens_part2(realDataOne))
 	}
 }

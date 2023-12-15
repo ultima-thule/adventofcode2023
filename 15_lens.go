@@ -23,15 +23,16 @@ func puzzle15(input string) int {
 	return res
 }
 
-// Solve puzzle no 15 part 2
-func puzzle15_2(input string) map[string]string {
+// prepare data - decode labels and commands
+func prepareData15(input string) map[string]string {
 	paramsMap := decodeLabel(input)
 	paramsMap["box"] = fmt.Sprint(puzzle15(paramsMap["lbl"]))
 	return paramsMap
 }
 
+// Solve puzzle no 15 part 2
 // move lenses according to command
-func moveLenses(paramsMap map[string]string, lenses *[][]Lens) {
+func puzzle15_2(paramsMap map[string]string, lenses *[][]Lens) {
 	box, _ := strconv.Atoi(paramsMap["box"])
 	cmd := paramsMap["cmd"]
 	foc := paramsMap["focal"]

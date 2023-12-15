@@ -28,7 +28,7 @@ func lens(filename string, puzzle func(string) int) int {
 	return res
 }
 
-func lens_part2(filename string, puzzle func(string) map[string]string) int {
+func lens_part2(filename string) int {
 	f := readFile(filename)
 	defer closeFile(f)
 
@@ -46,8 +46,8 @@ func lens_part2(filename string, puzzle func(string) map[string]string) int {
 		lenses = append(lenses, make([]Lens, 0))
 	}
 	for i := 0; i < len(input); i++ {
-		mapRes := puzzle(input[i])
-		moveLenses(mapRes, &lenses)
+		mapRes := prepareData15(input[i])
+		puzzle15_2(mapRes, &lenses)
 	}
 
 	res = calcFocusingPower(&lenses)
