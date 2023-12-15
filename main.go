@@ -91,11 +91,10 @@ func main() {
 		fmt.Println(points(testDataOne, puzzle13_2))
 		fmt.Println(points(realDataTwo, puzzle13_2))
 	case "14":
-		// fmt.Println(tilt(testDataOne))
-		// fmt.Println(tilt(realDataOne, puzzle14))
+		fmt.Println(tilt(testDataOne, puzzle14))
+		fmt.Println(tilt(realDataOne, puzzle14))
 		fmt.Println(tilt(testDataOne, puzzle14_2))
 		fmt.Println(tilt(realDataTwo, puzzle14_2))
-		// sol13(realDataTwo)
 	case "15":
 		fmt.Println(lens(testDataOne, puzzle15))
 		fmt.Println(lens(realDataOne, puzzle15))
