@@ -5,8 +5,55 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"time"
 )
+
+func lens(filename string, puzzle func(string) int) int {
+	f := readFile(filename)
+	defer closeFile(f)
+
+	fileScanner := bufio.NewScanner(f)
+
+	res := 0
+
+	input := make([]string, 0)
+	for fileScanner.Scan() {
+		input = append(input, strings.Split(fileScanner.Text(), ",")...)
+	}
+	for i := 0; i < len(input); i++ {
+		res += puzzle(input[i])
+	}
+
+	return res
+}
+
+func lens_part2(filename string, puzzle func(string) map[string]string) int {
+	f := readFile(filename)
+	defer closeFile(f)
+
+	fileScanner := bufio.NewScanner(f)
+
+	res := 0
+
+	input := make([]string, 0)
+	for fileScanner.Scan() {
+		input = append(input, strings.Split(fileScanner.Text(), ",")...)
+	}
+
+	lenses := make([][]Lens, 256)
+	for i := 0; i < 256; i++ {
+		lenses = append(lenses, make([]Lens, 0))
+	}
+	for i := 0; i < len(input); i++ {
+		mapRes := puzzle(input[i])
+		moveLenses(mapRes, &lenses)
+	}
+
+	res = calcFocusingPower(&lenses)
+
+	return res
+}
 
 // Day 11 solution
 func cosmic(filename string, calcFun func([][]byte, int) int, expRate int) int {

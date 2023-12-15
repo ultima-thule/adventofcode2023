@@ -1,62 +1,14 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"regexp"
 	"strconv"
-	"strings"
 )
 
 type Lens struct {
 	label string
 	focal int
-}
-
-func lens(filename string, puzzle func(string) int) int {
-	f := readFile(filename)
-	defer closeFile(f)
-
-	fileScanner := bufio.NewScanner(f)
-
-	res := 0
-
-	input := make([]string, 0)
-	for fileScanner.Scan() {
-		input = append(input, strings.Split(fileScanner.Text(), ",")...)
-	}
-	for i := 0; i < len(input); i++ {
-		res += puzzle(input[i])
-	}
-
-	return res
-}
-
-func lens_part2(filename string, puzzle func(string) map[string]string) int {
-	f := readFile(filename)
-	defer closeFile(f)
-
-	fileScanner := bufio.NewScanner(f)
-
-	res := 0
-
-	input := make([]string, 0)
-	for fileScanner.Scan() {
-		input = append(input, strings.Split(fileScanner.Text(), ",")...)
-	}
-
-	lenses := make([][]Lens, 256)
-	for i := 0; i < 256; i++ {
-		lenses = append(lenses, make([]Lens, 0))
-	}
-	for i := 0; i < len(input); i++ {
-		mapRes := puzzle(input[i])
-		moveLenses(mapRes, &lenses)
-	}
-
-	res = calcFocusingPower(&lenses)
-
-	return res
 }
 
 // Solve puzzle no 15 part 1
@@ -78,6 +30,7 @@ func puzzle15_2(input string) map[string]string {
 	return paramsMap
 }
 
+// move lenses according to command
 func moveLenses(paramsMap map[string]string, lenses *[][]Lens) {
 	box, _ := strconv.Atoi(paramsMap["box"])
 	cmd := paramsMap["cmd"]
@@ -103,6 +56,7 @@ func moveLenses(paramsMap map[string]string, lenses *[][]Lens) {
 	}
 }
 
+// search for index of lens with given label
 func lensIndex(lenses *[][]Lens, box int, lab string) int {
 	idx := -1
 	for i := 0; i < len((*lenses)[box]); i++ {
@@ -114,6 +68,7 @@ func lensIndex(lenses *[][]Lens, box int, lab string) int {
 	return idx
 }
 
+// calculate focusing power: box+1 * lens index * lens focal
 func calcFocusingPower(lenses *[][]Lens) int {
 	res := 0
 	for b := 0; b < 256; b++ {
@@ -125,6 +80,7 @@ func calcFocusingPower(lenses *[][]Lens) int {
 	return res
 }
 
+// parse sequence of operations
 func decodeLabel(input string) map[string]string {
 	compRegEx := regexp.MustCompile("(?P<lbl>[a-z]+)(?P<cmd>[-=])(?P<focal>\\d*)")
 
