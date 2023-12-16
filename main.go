@@ -100,5 +100,10 @@ func main() {
 		fmt.Println(lens(realDataOne, puzzle15))
 		fmt.Println(lens_part2(testDataOne))
 		fmt.Println(lens_part2(realDataOne))
+	case "16":
+		fmt.Println(beam(testDataOne, puzzle16))
+		fmt.Println(beam(realDataOne, puzzle16))
+		fmt.Println(beam(testDataOne, puzzle16_2))
+		fmt.Println(beam(realDataOne, puzzle16_2))
 	}
 }
