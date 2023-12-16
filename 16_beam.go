@@ -28,11 +28,12 @@ func puzzle16(input [][]byte) int {
 	}
 
 	visited := make(map[string]bool, 0)
+	distinct := make(map[string]bool, 0)
 
 	m := Cell{e: W, x: 0, y: 0}
-	move(m, input[0][0], &input, visited)
+	move(m, input[0][0], &input, visited, distinct)
 
-	return calcVisited(visited, len(input), len(input[0]))
+	return len(distinct)
 }
 
 // Solve puzzle no 15 part 1
@@ -62,20 +63,22 @@ func puzzle16_2(input [][]byte) int {
 	// find maximum beam coverage
 	for _, m := range entryPoints {
 		visited := make(map[string]bool, 0)
-		move(m, input[m.x][m.y], &input, visited)
-		maxRes = max(maxRes, calcVisited(visited, maxRows, maxCols))
+		distinct := make(map[string]bool, 0)
+		move(m, input[m.x][m.y], &input, visited, distinct)
+		maxRes = max(maxRes, len(distinct))
 	}
 
 	return maxRes
 }
 
 // move based on command r
-func move(m Cell, r byte, input *[][]byte, visited map[string]bool) {
+func move(m Cell, r byte, input *[][]byte, visited map[string]bool, distinct map[string]bool) {
 	key := fmt.Sprintf("%d_%d_%s", m.x, m.y, m.e)
 	if visited[key] {
 		return
 	}
 	visited[key] = true
+	distinct[fmt.Sprintf("%d_%d", m.x, m.y)] = true
 
 	dir := getNextDir(r, m.e)
 
@@ -86,7 +89,7 @@ func move(m Cell, r byte, input *[][]byte, visited map[string]bool) {
 
 		if nextX >= 0 && nextX < len(*input) && nextY >= 0 && nextY < len((*input)[0]) {
 			p := Cell{e: v, x: nextX, y: nextY}
-			move(p, (*input)[nextX][nextY], input, visited)
+			move(p, (*input)[nextX][nextY], input, visited, distinct)
 		}
 	}
 }
@@ -146,16 +149,4 @@ func moveOffset(from Direction, to Direction) Point {
 		"3_3": {0, 1},  // W=>W
 	}
 	return res[fmt.Sprintf("%d_%d", from, to)]
-}
-
-func calcVisited(visited map[string]bool, maxRows int, maxCols int) int {
-	cnt := 0
-	for r := 0; r < maxRows; r++ {
-		for c := 0; c < maxCols; c++ {
-			if visited[fmt.Sprintf("%d_%d_N", r, c)] || visited[fmt.Sprintf("%d_%d_S", r, c)] || visited[fmt.Sprintf("%d_%d_W", r, c)] || visited[fmt.Sprintf("%d_%d_E", r, c)] {
-				cnt++
-			}
-		}
-	}
-	return cnt
 }
