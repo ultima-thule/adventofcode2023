@@ -76,15 +76,13 @@ func main() {
 	case "11":
 		fmt.Println(cosmic(testDataOne, puzzle11, 2))
 		fmt.Println(cosmic(realDataOne, puzzle11, 2))
-		fmt.Println(cosmic(testDataTwo, puzzle11, 10))
-		fmt.Println(cosmic(testDataTwo, puzzle11, 100))
+		fmt.Println(cosmic(testDataOne, puzzle11, 1000000))
 		fmt.Println(cosmic(realDataTwo, puzzle11, 1000000))
 	case "12":
-		fmt.Println(hotSprings(testDataOne))
-		// fmt.Println(cosmic(realDataOne, puzzle12))
-		// fmt.Println(cosmic(testDataTwo, puzzle11_1, 10))
-		// fmt.Println(cosmic(testDataTwo, puzzle11_1, 100))
-		// fmt.Println(cosmic(realDataTwo, puzzle11, 1000000))
+		fmt.Println(hotSprings(testDataOne, false))
+		fmt.Println(hotSprings(realDataOne, false))
+		fmt.Println(hotSprings(testDataTwo, true))
+		// fmt.Println(hotSprings(realDataOne, true))
 	case "13":
 		fmt.Println(points(testDataOne, puzzle13))
 		fmt.Println(points(realDataOne, puzzle13))
