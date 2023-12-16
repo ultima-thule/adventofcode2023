@@ -92,6 +92,7 @@ func move(m Cell, r byte, input *[][]byte, visited map[string]bool) {
 }
 
 // get direction from which next cell will be entered
+// based on previous direction and command
 func getNextDir(r byte, d Direction) []Direction {
 	dirs := []map[byte][]Direction{
 		{
@@ -133,18 +134,14 @@ func moveOffset(from Direction, to Direction) Point {
 	res := map[string]Point{
 		"0_0": {1, 0},  // N=>N
 		"0_1": {0, -1}, // N=>E
-		//"0_2": {0, 0}, // N=>S non existing
 		"0_3": {0, 1},  // N=> W
 		"1_0": {1, 0},  // E=>N
 		"1_1": {0, -1}, // E=>E
 		"1_2": {-1, 0}, // E=>S
-		//"1_3": {0, 0}, // E=>W non existing
-		//"2_0": {1, 0},  // S=>N non existing
 		"2_1": {0, -1}, // S=>E
 		"2_2": {-1, 0}, // S=>S
 		"2_3": {0, 1},  // S=>W
 		"3_0": {1, 0},  // W=>N
-		//"3_1": {0, -1}, // W=>E non existing
 		"3_2": {-1, 0}, // W=>S
 		"3_3": {0, 1},  // W=>W
 	}
@@ -153,21 +150,9 @@ func moveOffset(from Direction, to Direction) Point {
 
 func calcVisited(visited map[string]bool, maxRows int, maxCols int) int {
 	cnt := 0
-
-	// res := make(map[string]bool, 0)
-	// var r, c int
-	// var s string
-	// for k, v := range visited {
-	// 	fmt.Sprintf("%d_%d_%s", r, c, s)
-	// }
-
 	for r := 0; r < maxRows; r++ {
 		for c := 0; c < maxCols; c++ {
-			keyN := fmt.Sprintf("%d_%d_N", r, c)
-			keyS := fmt.Sprintf("%d_%d_S", r, c)
-			keyW := fmt.Sprintf("%d_%d_W", r, c)
-			keyE := fmt.Sprintf("%d_%d_E", r, c)
-			if visited[keyN] || visited[keyS] || visited[keyW] || visited[keyE] {
+			if visited[fmt.Sprintf("%d_%d_N", r, c)] || visited[fmt.Sprintf("%d_%d_S", r, c)] || visited[fmt.Sprintf("%d_%d_W", r, c)] || visited[fmt.Sprintf("%d_%d_E", r, c)] {
 				cnt++
 			}
 		}
