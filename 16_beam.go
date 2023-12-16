@@ -2,14 +2,10 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"time"
 )
 
 type (
 	Direction int
-	Command   int
 )
 
 const (
@@ -19,30 +15,10 @@ const (
 	W
 )
 
-type Mirror struct {
-	x       int
-	y       int
-	entered Direction
-}
-
-// Day 16 solution
-func beam(filename string, calcFun func([][]byte) int) int {
-	// Read the contents of the file
-	fmt.Println("=> DataSet: ", filename)
-
-	contentBytes, err := os.ReadFile(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-	content := string(contentBytes)
-	grid := parseInputIntoBytes(content)
-
-	res := calcFun(grid)
-
-	defer timeTrack(time.Now(), "beam")
-	fmt.Println()
-
-	return res
+type Cell struct {
+	x int
+	y int
+	e Direction // direction of entrance to the cell
 }
 
 // Solve puzzle no 15 part 1
@@ -51,18 +27,12 @@ func puzzle16(input [][]byte) int {
 		return 0
 	}
 
-	res := 0
-
-	// fmt.Println(input)
 	visited := make(map[string]bool, 0)
 
-	m := Mirror{entered: W, x: 0, y: 0}
-
+	m := Cell{e: W, x: 0, y: 0}
 	move(m, input[0][0], &input, visited)
 
-	res = calcVisited(visited, len(input), len(input[0]))
-
-	return res
+	return calcVisited(visited, len(input), len(input[0]))
 }
 
 // Solve puzzle no 15 part 1
@@ -75,163 +45,90 @@ func puzzle16_2(input [][]byte) int {
 	maxCols := len(input[0])
 
 	maxRes := 0
+	entryPoints := make([]Cell, 0)
 
-	// top row from N
+	// top row from N, bottom row from S
 	for i := 0; i < maxCols; i++ {
-		res := 0
-		visited := make(map[string]bool, 0)
-		m := Mirror{entered: N, x: 0, y: i}
-		move(m, input[0][i], &input, visited)
-		res = calcVisited(visited, maxRows, maxCols)
-		maxRes = max(res, maxRes)
+		m1 := Cell{e: N, x: 0, y: i}
+		m2 := Cell{e: S, x: maxRows - 1, y: i}
+		entryPoints = append(entryPoints, m1, m2)
 	}
-	// bottom row from S
-	for i := 0; i < maxCols; i++ {
-		res := 0
-		visited := make(map[string]bool, 0)
-		m := Mirror{entered: S, x: maxRows - 1, y: i}
-		move(m, input[maxRows-1][i], &input, visited)
-		res = calcVisited(visited, maxRows, maxCols)
-		maxRes = max(res, maxRes)
-	}
-	// left column from W
+	// left column from W, right column from E
 	for i := 0; i < maxRows; i++ {
-		res := 0
-		visited := make(map[string]bool, 0)
-		m := Mirror{entered: W, x: i, y: 0}
-		move(m, input[i][0], &input, visited)
-		res = calcVisited(visited, maxRows, maxCols)
-		maxRes = max(res, maxRes)
+		m1 := Cell{e: W, x: i, y: 0}
+		m2 := Cell{e: E, x: i, y: maxCols - 1}
+		entryPoints = append(entryPoints, m1, m2)
 	}
-	// right column from E
-	for i := 0; i < maxRows; i++ {
-		res := 0
+	// find maximum beam coverage
+	for _, m := range entryPoints {
 		visited := make(map[string]bool, 0)
-		m := Mirror{entered: E, x: i, y: maxCols - 1}
-		move(m, input[i][maxCols-1], &input, visited)
-		res = calcVisited(visited, maxRows, maxCols)
-		maxRes = max(res, maxRes)
+		move(m, input[m.x][m.y], &input, visited)
+		maxRes = max(maxRes, calcVisited(visited, maxRows, maxCols))
 	}
 
 	return maxRes
 }
 
-func m(m Mirror) {
-}
-
-func move(m Mirror, r byte, input *[][]byte, visited map[string]bool) {
-	// mark as visited
-	key := fmt.Sprintf("%d_%d_%s", m.x, m.y, m.entered)
-	// fmt.Println("\nVisiting ", key, "from direction", m.entered.String(), "char", string(r))
+// move based on command r
+func move(m Cell, r byte, input *[][]byte, visited map[string]bool) {
+	key := fmt.Sprintf("%d_%d_%s", m.x, m.y, m.e)
 	if visited[key] {
 		return
 	}
-
 	visited[key] = true
 
-	// printVisited(visited, len(*input), len((*input)[0]))
-
-	var dir []Direction
-	switch m.entered {
-	case N:
-		// fmt.Println("Entering from N")
-		dir = fromNorth(r)
-	case S:
-		// fmt.Println("Entering from S")
-		dir = fromSouth(r)
-	case E:
-		// fmt.Println("Entering from E")
-		dir = fromEast(r)
-	case W:
-		// fmt.Println("Entering from W")
-		dir = fromWest(r)
-	}
-	//	fmt.Println("Found", len(dir), "options")
+	dir := getNextDir(r, m.e)
 
 	for _, v := range dir {
-
-		// fmt.Println("Option", k)
-		// fmt.Println("Rune ", r, " => dir", dir)
-
-		n := nextMove(m.entered, v)
+		n := moveOffset(m.e, v)
 		nextX := m.x + n.x
 		nextY := m.y + n.y
 
 		if nextX >= 0 && nextX < len(*input) && nextY >= 0 && nextY < len((*input)[0]) {
-			// fmt.Println("Next move: ", m.entered, "=>", v, "cmd", string(r), "next point: ", nextX, nextY)
-			p := Mirror{entered: v, x: nextX, y: nextY}
+			p := Cell{e: v, x: nextX, y: nextY}
 			move(p, (*input)[nextX][nextY], input, visited)
-		} else {
-			// fmt.Println("-Deadlock move: ", m.entered, "=>", v, "next point: ", nextX, nextY)
 		}
 	}
 }
 
-func fromNorth(r byte) []Direction {
-	if r == '|' {
-		return []Direction{N}
+// get direction from which next cell will be entered
+func getNextDir(r byte, d Direction) []Direction {
+	dirs := []map[byte][]Direction{
+		{
+			'|':  {N},
+			'-':  {W, E},
+			'\\': {W},
+			'/':  {E},
+			'.':  {N},
+		},
+		{
+			'|':  {S, N},
+			'-':  {E},
+			'\\': {S},
+			'/':  {N},
+			'.':  {E},
+		},
+		{
+			'|':  {S},
+			'-':  {W, E},
+			'\\': {E},
+			'/':  {W},
+			'.':  {S},
+		},
+		{
+			'|':  {S, N},
+			'-':  {W},
+			'\\': {N},
+			'/':  {S},
+			'.':  {W},
+		},
 	}
-	if r == '-' {
-		return []Direction{W, E}
-	}
-	if r == '\\' {
-		return []Direction{W}
-	}
-	if r == '/' {
-		return []Direction{E}
-	}
-	return []Direction{N}
+
+	return dirs[d][r]
 }
 
-func fromSouth(r byte) []Direction {
-	if r == '|' {
-		return []Direction{S}
-	}
-	if r == '-' {
-		return []Direction{W, E}
-	}
-	if r == '\\' {
-		return []Direction{E}
-	}
-	if r == '/' {
-		return []Direction{W}
-	}
-	return []Direction{S}
-}
-
-func fromWest(r byte) []Direction {
-	if r == '-' {
-		return []Direction{W}
-	}
-	if r == '|' {
-		return []Direction{S, N}
-	}
-	if r == '\\' {
-		return []Direction{N}
-	}
-	if r == '/' {
-		return []Direction{S}
-	}
-	return []Direction{W}
-}
-
-func fromEast(r byte) []Direction {
-	if r == '-' {
-		return []Direction{E}
-	}
-	if r == '|' {
-		return []Direction{S, N}
-	}
-	if r == '\\' {
-		return []Direction{S}
-	}
-	if r == '/' {
-		return []Direction{N}
-	}
-	return []Direction{E}
-}
-
-func nextMove(prev Direction, next Direction) Point {
+// calculate x and y offsets when moving from => to
+func moveOffset(from Direction, to Direction) Point {
 	// N = 0, E = 1, S = 2, W = 3
 	res := map[string]Point{
 		"0_0": {1, 0},  // N=>N
@@ -251,35 +148,19 @@ func nextMove(prev Direction, next Direction) Point {
 		"3_2": {-1, 0}, // W=>S
 		"3_3": {0, 1},  // W=>W
 	}
-	key := fmt.Sprintf("%d_%d", prev, next)
-	// fmt.Println("Mapping:", prev.String(), "=>", next.String(), "(", key, ") to", res[key])
-
-	return res[key]
-}
-
-func (d Direction) String() string {
-	return []string{"N", "E", "S", "W"}[d]
-}
-
-func printVisited(visited map[string]bool, maxRows int, maxCols int) {
-	for r := 0; r < maxRows; r++ {
-		for c := 0; c < maxCols; c++ {
-			keyN := fmt.Sprintf("%d_%d_N", r, c)
-			keyS := fmt.Sprintf("%d_%d_S", r, c)
-			keyW := fmt.Sprintf("%d_%d_W", r, c)
-			keyE := fmt.Sprintf("%d_%d_E", r, c)
-			if visited[keyN] || visited[keyS] || visited[keyW] || visited[keyE] {
-				fmt.Print("#")
-				continue
-			}
-			fmt.Print(".")
-		}
-		fmt.Print("\n")
-	}
+	return res[fmt.Sprintf("%d_%d", from, to)]
 }
 
 func calcVisited(visited map[string]bool, maxRows int, maxCols int) int {
 	cnt := 0
+
+	// res := make(map[string]bool, 0)
+	// var r, c int
+	// var s string
+	// for k, v := range visited {
+	// 	fmt.Sprintf("%d_%d_%s", r, c, s)
+	// }
+
 	for r := 0; r < maxRows; r++ {
 		for c := 0; c < maxCols; c++ {
 			keyN := fmt.Sprintf("%d_%d_N", r, c)

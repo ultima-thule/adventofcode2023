@@ -273,3 +273,24 @@ func transposeMatrix(input []string) []string {
 
 	return ret
 }
+
+func printVisited(visited map[string]bool, maxRows int, maxCols int) {
+	for r := 0; r < maxRows; r++ {
+		for c := 0; c < maxCols; c++ {
+			keyN := fmt.Sprintf("%d_%d_N", r, c)
+			keyS := fmt.Sprintf("%d_%d_S", r, c)
+			keyW := fmt.Sprintf("%d_%d_W", r, c)
+			keyE := fmt.Sprintf("%d_%d_E", r, c)
+			if visited[keyN] || visited[keyS] || visited[keyW] || visited[keyE] {
+				fmt.Print("#")
+				continue
+			}
+			fmt.Print(".")
+		}
+		fmt.Print("\n")
+	}
+}
+
+func (d Direction) String() string {
+	return []string{"N", "E", "S", "W"}[d]
+}

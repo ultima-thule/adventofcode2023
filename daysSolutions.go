@@ -9,6 +9,25 @@ import (
 	"time"
 )
 
+// Day 16 solution
+func beam(filename string, calcFun func([][]byte) int) int {
+	fmt.Println("=> DataSet: ", filename)
+
+	contentBytes, err := os.ReadFile(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	content := string(contentBytes)
+	grid := parseInputIntoBytes(content)
+
+	res := calcFun(grid)
+
+	defer timeTrack(time.Now(), "beam")
+	fmt.Println()
+
+	return res
+}
+
 // solution day 13
 func points(filename string, calcData func([]int64, []int64) int) int {
 	f := readFile(filename)
