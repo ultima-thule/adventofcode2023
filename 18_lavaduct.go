@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sort"
 )
 
 type DigPlan struct {
@@ -32,6 +31,8 @@ func moveLava(xS int64, yS int64, input *[]DigPlan, visited map[string]bool, ran
 	key := fmt.Sprintf("%d_%d", xS, yS)
 	visited[key] = true
 
+	var boundaryNodes int64 = 0
+
 	polygon := make([]Point64, 0)
 
 	var lastX int64 = xS
@@ -49,33 +50,18 @@ func moveLava(xS int64, yS int64, input *[]DigPlan, visited map[string]bool, ran
 		nextY := lastY + y
 		maxX = max(maxX, nextX)
 		maxY = max(maxY, nextY)
-
+		var toAdd int64 = 0
 		switch v.dir {
 		case "R":
-			for j := lastY + 1; j <= nextY; j++ {
-				key := fmt.Sprintf("%d_%d", nextX, j)
-				visited[key] = true
-				addToRange(ranges, nextX, j)
-			}
+			toAdd = nextY - lastY
 		case "L":
-			for j := lastY - 1; j >= nextY; j-- {
-				key := fmt.Sprintf("%d_%d", nextX, j)
-				visited[key] = true
-				addToRange(ranges, nextX, j)
-			}
+			toAdd += lastY - nextY
 		case "U":
-			for i := lastX - 1; i >= nextX; i-- {
-				key := fmt.Sprintf("%d_%d", i, nextY)
-				visited[key] = true
-				addToRange(ranges, i, nextY)
-			}
+			toAdd += lastX - nextX
 		case "D":
-			for i := lastX + 1; i <= nextX; i++ {
-				key := fmt.Sprintf("%d_%d", i, nextY)
-				visited[key] = true
-				addToRange(ranges, i, nextY)
-			}
+			toAdd += nextX - lastX
 		}
+		boundaryNodes += toAdd
 		lastX = nextX
 		lastY = nextY
 	}
@@ -85,20 +71,23 @@ func moveLava(xS int64, yS int64, input *[]DigPlan, visited map[string]bool, ran
 	polygon = append(p, polygon[:len(polygon)-1]...)
 
 	// printVisited18(visited, maxX+1, maxY+1)
-	for _, v := range ranges {
-		sort.Slice(v, func(i, j int) bool { return v[i] < v[j] })
-		// sort.Ints(v)
-	}
+	// for _, v := range ranges {
+	// 	sort.Slice(v, func(i, j int) bool { return v[i] < v[j] })
+	// 	// sort.Ints(v)
+	// }
 	// fmt.Println(polygon)
 	// fmt.Println(shoelace(polygon))
 
 	area := shoelace(polygon)
 	// fmt.Println("Area:", area)
-	interior := pickFormula(area, int64(len(visited)))
+
+	// interior := pickFormula(area, int64(len(visited)))
+	interior := pickFormula(area, boundaryNodes)
 	// fmt.Println("Interior:", interior)
 	// printVisited18(visited, maxX+1, maxY+1)
 
-	return calcCoverage(int64(len(visited)), interior)
+	// return calcCoverage(int64(len(visited)), interior)
+	return calcCoverage(boundaryNodes, interior)
 }
 
 // calculate x and y offsets when moving from => to
