@@ -19,7 +19,7 @@ func puzzle18(input []DigPlan) int64 {
 	return moveLava(0, 0, &input)
 }
 
-// move based on command r
+// move based on dig plan
 func moveLava(xS int64, yS int64, input *[]DigPlan) int64 {
 	var boundaryCnt int64 = 0
 
@@ -36,24 +36,20 @@ func moveLava(xS int64, yS int64, input *[]DigPlan) int64 {
 		nextX := lastX + vector.x
 		nextY := lastY + vector.y
 
-		var toAdd int64 = 0
-		switch v.dir {
-		case "R":
-			toAdd = nextY - lastY
-		case "L":
-			toAdd = lastY - nextY
-		case "U":
-			toAdd = lastX - nextX
-		case "D":
-			toAdd = nextX - lastX
+		toAdd := map[string]int64{
+			"R": nextY - lastY,
+			"L": lastY - nextY,
+			"U": lastX - nextX,
+			"D": nextX - lastX,
 		}
-		boundaryCnt += toAdd
+
+		boundaryCnt += toAdd[v.dir]
 		lastX = nextX
 		lastY = nextY
 	}
 
 	// move starting point to the beginning
-	polygon = append([]Point64{{x: 0, y: 0}}, polygon[:len(polygon)-1]...)
+	polygon = append(polygon[len(polygon)-1:], polygon[:len(polygon)-1]...)
 
 	// calc total area
 	area := shoelace(polygon)
