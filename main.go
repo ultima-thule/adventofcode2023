@@ -103,5 +103,15 @@ func main() {
 		fmt.Println(beam(realDataOne, puzzle16))
 		fmt.Println(beam(testDataOne, puzzle16_2))
 		fmt.Println(beam(realDataOne, puzzle16_2))
+	case "17":
+		fmt.Println(crucible(testDataOne, puzzle17))
+		// fmt.Println(crucible(realDataOne, puzzle17))
+		// fmt.Println(crucible(testDataOne, puzzle17_2))
+		// fmt.Println(crucible(realDataOne, puzzle17_2))
+	case "18":
+		fmt.Println(lavaduct(testDataOne, puzzle18))
+		fmt.Println(lavaduct(realDataOne, puzzle18))
+		fmt.Println(lavaduct(testDataOne, puzzle18_2))
+		// fmt.Println(lavaduct(realDataOne, puzzle18_2))
 	}
 }

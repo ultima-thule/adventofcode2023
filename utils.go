@@ -42,6 +42,14 @@ func convert(text string) int {
 	return 0
 }
 
+func convert64(text string) int64 {
+	intVar, err := strconv.Atoi(text)
+	if err == nil {
+		return int64(intVar)
+	}
+	return 0
+}
+
 func readInput(filename string, calcFun func([]string) int, prepFun func(data []string) []string) []string {
 	f := readFile(filename)
 	defer closeFile(f)
@@ -243,6 +251,13 @@ func abs(n int) int {
 	return n
 }
 
+func abs64(n int64) int64 {
+	if n < 0 {
+		return -n
+	}
+	return n
+}
+
 func printTilt(roundRocks map[string]bool, cubeRocks map[string]bool, maxRows int, maxCols int) {
 	for r := 0; r < maxRows; r++ {
 		for c := 0; c < maxCols; c++ {
@@ -292,5 +307,72 @@ func printVisited(visited map[string]bool, maxRows int, maxCols int) {
 }
 
 func (d Direction) String() string {
-	return []string{"N", "E", "S", "W"}[d]
+	return []string{"N", "E", "S", "W", "N1", "E1", "S1", "W1", "N2", "E2", "S2", "W2", "N3", "E3", "S3", "W3"}[d]
+}
+
+func parseInputIntoNodes(input string) [][]Node {
+	splitted := strings.Split(input, "\n")
+	grid := make([][]Node, len(splitted))
+	for i := range grid {
+		grid[i] = make([]Node, len(splitted[0]))
+	}
+	for i := range splitted {
+		for k, v := range splitted[i] {
+			conv := convert(string(v))
+			grid[i][k] = Node{x: i, y: k, score: conv}
+		}
+	}
+
+	return grid
+}
+
+func parseInput18(input string) []DigPlan {
+	splitted := strings.Split(input, "\n")
+	grid := make([]DigPlan, 0)
+
+	for _, v := range splitted {
+		tmp := strings.Split(v, " ")
+		clr := strings.ReplaceAll(tmp[2], "(#", "")
+		clr = strings.ReplaceAll(clr, ")", "")
+		dp := DigPlan{dir: tmp[0], moves: convert64(string(tmp[1])), color: clr}
+		grid = append(grid, dp)
+	}
+
+	// fmt.Println(grid)
+
+	return grid
+}
+
+func parseInput18_2(input string) []DigPlan {
+	splitted := strings.Split(input, "\n")
+	grid := make([]DigPlan, 0)
+
+	mapDir := map[byte]string{'0': "R", '1': "D", '2': "L", '3': "U"}
+
+	for _, v := range splitted {
+		tmp := strings.Split(v, " ")
+		clr := strings.ReplaceAll(tmp[2], "(#", "")
+		clr = strings.ReplaceAll(clr, ")", "")
+		value, _ := strconv.ParseInt(clr[0:5], 16, 64)
+		dp := DigPlan{dir: mapDir[clr[5]], moves: value}
+		grid = append(grid, dp)
+	}
+
+	// fmt.Println(grid)
+
+	return grid
+}
+
+func printVisited18(visited map[string]bool, maxRows int, maxCols int) {
+	for r := 0; r < maxRows; r++ {
+		for c := 0; c < maxCols; c++ {
+			keyN := fmt.Sprintf("%d_%d", r, c)
+			if visited[keyN] {
+				fmt.Print("#")
+				continue
+			}
+			fmt.Print(".")
+		}
+		fmt.Print("\n")
+	}
 }
