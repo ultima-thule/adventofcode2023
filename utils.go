@@ -334,7 +334,7 @@ func parseInput18(input string) []DigPlan {
 		tmp := strings.Split(v, " ")
 		clr := strings.ReplaceAll(tmp[2], "(#", "")
 		clr = strings.ReplaceAll(clr, ")", "")
-		dp := DigPlan{dir: tmp[0], moves: convert64(string(tmp[1])), color: clr}
+		dp := DigPlan{dir: tmp[0], moves: convert64(string(tmp[1]))}
 		grid = append(grid, dp)
 	}
 

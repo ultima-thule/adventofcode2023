@@ -1,13 +1,8 @@
 package main
 
-import (
-	"fmt"
-)
-
 type DigPlan struct {
 	dir   string
 	moves int64
-	color string
 }
 
 type Point64 struct {
@@ -15,110 +10,77 @@ type Point64 struct {
 	y int64
 }
 
-// Solve puzzle no 15 part 1
+// Solve puzzle no 18 part 1 & 2
 func puzzle18(input []DigPlan) int64 {
 	if input == nil {
 		return 0
 	}
 
-	visited := make(map[string]bool, 0)
-	ranges := make(map[int64][]int64, 0)
-	return moveLava(0, 0, &input, visited, ranges)
+	return moveLava(0, 0, &input)
 }
 
 // move based on command r
-func moveLava(xS int64, yS int64, input *[]DigPlan, visited map[string]bool, ranges map[int64][]int64) int64 {
-	key := fmt.Sprintf("%d_%d", xS, yS)
-	visited[key] = true
-
-	var boundaryNodes int64 = 0
+func moveLava(xS int64, yS int64, input *[]DigPlan) int64 {
+	var boundaryCnt int64 = 0
 
 	polygon := make([]Point64, 0)
 
 	var lastX int64 = xS
 	var lastY int64 = yS
-	var maxX int64 = 0
-	var maxY int64 = 0
 	for _, v := range *input {
-		x, y := moveOffset18(v.dir, v.moves)
+		vector := moveOffset18(v.dir, v.moves)
 
 		p := []Point64{{x: lastX, y: lastY}}
-		// fmt.Println("Step:", v, "pol", p)
 		polygon = append(p, polygon...)
 
-		nextX := lastX + x
-		nextY := lastY + y
-		maxX = max(maxX, nextX)
-		maxY = max(maxY, nextY)
+		nextX := lastX + vector.x
+		nextY := lastY + vector.y
+
 		var toAdd int64 = 0
 		switch v.dir {
 		case "R":
 			toAdd = nextY - lastY
 		case "L":
-			toAdd += lastY - nextY
+			toAdd = lastY - nextY
 		case "U":
-			toAdd += lastX - nextX
+			toAdd = lastX - nextX
 		case "D":
-			toAdd += nextX - lastX
+			toAdd = nextX - lastX
 		}
-		boundaryNodes += toAdd
+		boundaryCnt += toAdd
 		lastX = nextX
 		lastY = nextY
 	}
 
-	p := []Point64{{x: 0, y: 0}}
-	// fmt.Println("Step:", v, "pol", p)
-	polygon = append(p, polygon[:len(polygon)-1]...)
+	// move starting point to the beginning
+	polygon = append([]Point64{{x: 0, y: 0}}, polygon[:len(polygon)-1]...)
 
-	// printVisited18(visited, maxX+1, maxY+1)
-	// for _, v := range ranges {
-	// 	sort.Slice(v, func(i, j int) bool { return v[i] < v[j] })
-	// 	// sort.Ints(v)
-	// }
-	// fmt.Println(polygon)
-	// fmt.Println(shoelace(polygon))
-
+	// calc total area
 	area := shoelace(polygon)
-	// fmt.Println("Area:", area)
+	// calc interior points
+	interior := pickFormula(area, boundaryCnt)
 
-	// interior := pickFormula(area, int64(len(visited)))
-	interior := pickFormula(area, boundaryNodes)
-	// fmt.Println("Interior:", interior)
-	// printVisited18(visited, maxX+1, maxY+1)
-
-	// return calcCoverage(int64(len(visited)), interior)
-	return calcCoverage(boundaryNodes, interior)
+	return boundaryCnt + interior
 }
 
 // calculate x and y offsets when moving from => to
-func moveOffset18(dir string, num int64) (int64, int64) {
-	var x, y int64
+func moveOffset18(dir string, num int64) Point64 {
+	v := Point64{0, 0}
 
 	switch dir {
 	case "R":
-		x = 0
-		y = num
+		v.y = num
 	case "L":
-		x = 0
-		y = -num
+		v.y = -num
 	case "U":
-		x = -num
-		y = 0
+		v.x = -num
 	case "D":
-		x = num
-		y = 0
+		v.x = num
 	}
-
-	return x, y
+	return v
 }
 
-func addToRange(ranges map[int64][]int64, x int64, y int64) {
-	if ranges[x] == nil {
-		ranges[x] = make([]int64, 0)
-	}
-	ranges[x] = append(ranges[x], y)
-}
-
+// sholace formula for calculating area
 func shoelace(points []Point64) int64 {
 	var sum1, sum2 int64 = 0, 0
 
@@ -134,11 +96,8 @@ func shoelace(points []Point64) int64 {
 	return area
 }
 
+// pick formula for calculating interior
 func pickFormula(area int64, boundary int64) int64 {
 	// area = interior + (1/2 boundary) - 1
 	return area + 1 - boundary/2
-}
-
-func calcCoverage(boundary int64, interior int64) int64 {
-	return boundary + interior
 }
