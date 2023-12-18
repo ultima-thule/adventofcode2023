@@ -28,6 +28,25 @@ func lavaduct(filename string, calcFun func([]DigPlan) int64) int64 {
 	return res
 }
 
+// Day 18 solution
+func lavaduct_2(filename string, calcFun func([]DigPlan) int64) int64 {
+	fmt.Println("=> DataSet: ", filename)
+
+	contentBytes, err := os.ReadFile(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	content := string(contentBytes)
+	grid := parseInput18_2(content)
+
+	res := calcFun(grid)
+
+	defer timeTrack(time.Now(), "lavaduct")
+	fmt.Println()
+
+	return res
+}
+
 // Day 17 solution
 func crucible(filename string, calcFun func(*[][]Node) int) int {
 	fmt.Println("=> DataSet: ", filename)

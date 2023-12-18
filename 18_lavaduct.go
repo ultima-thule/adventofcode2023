@@ -93,9 +93,9 @@ func moveLava(xS int64, yS int64, input *[]DigPlan, visited map[string]bool, ran
 	// fmt.Println(shoelace(polygon))
 
 	area := shoelace(polygon)
-	fmt.Println("Area:", area)
+	// fmt.Println("Area:", area)
 	interior := pickFormula(area, int64(len(visited)))
-	fmt.Println("Interior:", interior)
+	// fmt.Println("Interior:", interior)
 	// printVisited18(visited, maxX+1, maxY+1)
 
 	return calcCoverage(int64(len(visited)), interior)

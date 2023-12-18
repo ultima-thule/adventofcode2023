@@ -111,7 +111,7 @@ func main() {
 	case "18":
 		fmt.Println(lavaduct(testDataOne, puzzle18))
 		fmt.Println(lavaduct(realDataOne, puzzle18))
-		fmt.Println(lavaduct(testDataOne, puzzle18_2))
-		// fmt.Println(lavaduct(realDataOne, puzzle18_2))
+		fmt.Println(lavaduct_2(testDataOne, puzzle18))
+		fmt.Println(lavaduct_2(realDataOne, puzzle18))
 	}
 }
