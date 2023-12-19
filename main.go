@@ -16,6 +16,7 @@ func main() {
 	realDataOne := "day" + day + "/input1.txt"
 	testDataTwo := "day" + day + "/input_test2.txt"
 	realDataTwo := "day" + day + "/input2.txt"
+	// realDataThree := "day" + day + "/input3.txt"
 	// testDataThree := "day" + day + "/input_test3.txt"
 
 	switch day {
@@ -113,5 +114,11 @@ func main() {
 		fmt.Println(lavaduct(realDataOne, puzzle18))
 		fmt.Println(lavaduct_2(testDataOne, puzzle18))
 		fmt.Println(lavaduct_2(realDataOne, puzzle18))
+	case "19":
+		fmt.Println(aplenty(testDataOne, puzzle19))
+		fmt.Println(aplenty(realDataOne, puzzle19))
+		// fmt.Println(aplenty(testDataOne, puzzle19))
+		// fmt.Println(aplenty(realDataOne, puzzle19))
+
 	}
 }

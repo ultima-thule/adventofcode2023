@@ -376,3 +376,58 @@ func printVisited18(visited map[string]bool, maxRows int, maxCols int) {
 		fmt.Print("\n")
 	}
 }
+
+func parseInput19(input string) (map[string][]Workflow, []Part) {
+	workflows := make(map[string][]Workflow, 0)
+	parts := make([]Part, 0)
+
+	splitted := strings.Split(input, "\n")
+
+	pat := regexp.MustCompile("(.+){(.+)}")
+
+	for _, v := range splitted {
+		if v == "" {
+			continue
+		}
+		if v[0] == '{' {
+			prts := strings.Split(v[1:len(v)-1], ",")
+			var x, m, a, s int
+			for _, p := range prts {
+				tmp := strings.Split(p, "=")
+				switch tmp[0] {
+				case "x":
+					x = convert(tmp[1])
+				case "m":
+					m = convert(tmp[1])
+				case "a":
+					a = convert(tmp[1])
+				case "s":
+					s = convert(tmp[1])
+				}
+			}
+			part := Part{x: x, m: m, a: a, s: s}
+			parts = append(parts, part)
+		} else {
+			matches := pat.FindAllStringSubmatch(v, -1)
+			name := matches[0][1]
+			wfs := strings.Split(matches[0][2], ",")
+			sl := make([]Workflow, 0)
+			for _, w := range wfs {
+				tmp := strings.Split(w, ":")
+				var wf Workflow
+				if len(tmp) == 2 {
+					wf = Workflow{src: tmp[0], dst: tmp[1]}
+				} else {
+					wf = Workflow{src: "*", dst: tmp[0]}
+				}
+				sl = append(sl, wf)
+			}
+			workflows[name] = sl
+		}
+	}
+
+	// fmt.Println("\n", workflows)
+	// fmt.Println("\n", parts)
+
+	return workflows, parts
+}

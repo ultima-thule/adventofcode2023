@@ -10,6 +10,25 @@ import (
 )
 
 // Day 18 solution
+func aplenty(filename string, calcFun func(map[string][]Workflow, []Part) int) int {
+	fmt.Println("=> DataSet: ", filename)
+
+	contentBytes, err := os.ReadFile(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	content := string(contentBytes)
+	wf, pt := parseInput19(content)
+
+	res := calcFun(wf, pt)
+
+	defer timeTrack(time.Now(), "aplenty")
+	fmt.Println()
+
+	return res
+}
+
+// Day 18 solution
 func lavaduct(filename string, calcFun func([]DigPlan) int64) int64 {
 	fmt.Println("=> DataSet: ", filename)
 
