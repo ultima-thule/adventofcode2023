@@ -85,23 +85,16 @@ func goWorkflow(p Part, wf map[string][]Workflow, start string) int {
 			params["s"] = p.s
 
 			result, _ := expr.Evaluate(params)
-			if result == true {
-				if v.dst == "A" {
-					return getRating(p)
-				} else if v.dst == "R" {
-					return 0
-				} else {
-					return goWorkflow(p, wf, v.dst)
-				}
+			if result == false {
+				continue
 			}
+		}
+		if v.dst == "A" {
+			return getRating(p)
+		} else if v.dst == "R" {
+			return 0
 		} else {
-			if v.dst == "A" {
-				return getRating(p)
-			} else if v.dst == "R" {
-				return 0
-			} else {
-				return goWorkflow(p, wf, v.dst)
-			}
+			return goWorkflow(p, wf, v.dst)
 		}
 	}
 
@@ -155,6 +148,7 @@ func goWorkflowsRange(todo map[string]PartRange, completed map[string]PartRange,
 		break
 	}
 
+	// call for next item
 	goWorkflowsRange(todo, completed, wf)
 }
 
@@ -228,13 +222,8 @@ func divideRanges(w Workflow, r PartRange) ([]PartRange, bool) {
 		p1.dst = w.dst
 		return append(ret, p1), w.src_greater
 	}
-	if w.src_greater == true {
-		ret = append(ret, p1)
-		ret = append(ret, p2)
-	} else {
-		ret = append(ret, p1)
-		ret = append(ret, p2)
-	}
+	ret = append(ret, p1)
+	ret = append(ret, p2)
 
 	return ret, w.src_greater
 }
