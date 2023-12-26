@@ -124,9 +124,19 @@ func main() {
 		// fmt.Println(pulseProp(realDataOne, puzzle20))
 		// fmt.Println(pulseProp(testDataOne, puzzle20))
 		// fmt.Println(pulseProp(realDataOne, puzzle20))
+	case "21":
+		fmt.Println(steps(testDataOne, puzzle21))
+		fmt.Println(steps(realDataOne, puzzle21))
+		// fmt.Println(pulseProp(testDataOne, puzzle20))
+		// fmt.Println(pulseProp(realDataOne, puzzle20))
 	case "24":
 		fmt.Println(intersect(testDataOne, puzzle24, 7.0, 27.0))
 		fmt.Println(intersect(realDataOne, puzzle24, 200000000000000.0, 400000000000000.0))
+		// fmt.Println(pulseProp(testDataOne, puzzle20))
+		// fmt.Println(pulseProp(realDataOne, puzzle20))
+	case "25":
+		fmt.Println(snowverload(testDataOne, puzzle25))
+		// fmt.Println(snowverload(realDataOne, puzzle25))
 		// fmt.Println(pulseProp(testDataOne, puzzle20))
 		// fmt.Println(pulseProp(realDataOne, puzzle20))
 	}

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"regexp"
 	"strconv"
@@ -496,6 +497,28 @@ func (m ModConfig) String() string {
 	return fmt.Sprintf("%s(%s) => %s prevPulses: %v", m.name, m.typ.String(), m.dest, m.prevPulses)
 }
 
+func parseInput21(input string) (map[string]bool, Point, int, int) {
+	ret := make(map[string]bool, 0)
+	var pRet Point
+
+	splitted := strings.Split(input, "\n")
+	maxX := len(splitted)
+	maxY := len(splitted[0])
+	for i := 0; i < len(splitted); i++ {
+		for j := 0; j < len(splitted[i]); j++ {
+			if string(splitted[i][j]) == "#" {
+				key := fmt.Sprintf("%d_%d", i, j)
+				ret[key] = true
+			}
+			if string(splitted[i][j]) == "S" {
+				pRet = Point{x: i, y: j}
+			}
+		}
+	}
+
+	return ret, pRet, maxX, maxY
+}
+
 func parseInput24(input string) []Vector {
 	ret := make([]Vector, 0)
 
@@ -509,4 +532,37 @@ func parseInput24(input string) []Vector {
 	}
 
 	return ret
+}
+
+func parseInput25(input string) (*WeightedGraph, map[string]bool) {
+	graph := NewGraph()
+
+	nodes := make(map[string]*GNode)
+
+	splitted := strings.Split(input, "\n")
+	tmp := make(map[string]bool, 0)
+	for _, v := range splitted {
+		spl := strings.Split(v, ": ")
+		tmp[spl[0]] = true
+
+		n := &GNode{spl[0], math.MaxInt, nil}
+		graph.AddNode(n)
+		nodes[spl[0]] = n
+	}
+
+	for _, v := range splitted {
+		spl := strings.Split(v, ": ")
+		spl2 := strings.Split(spl[1], " ")
+		for _, v1 := range spl2 {
+			_, ok := nodes[v1]
+			if !ok {
+				n := &GNode{v1, math.MaxInt, nil}
+				graph.AddNode(n)
+				nodes[v1] = n
+			}
+			graph.AddEdge(nodes[spl[0]], nodes[v1], 1)
+		}
+	}
+
+	return graph, tmp
 }

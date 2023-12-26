@@ -9,6 +9,25 @@ import (
 	"time"
 )
 
+// Day 25 solution
+func snowverload(filename string, calcFun func(*WeightedGraph, map[string]bool) int) int {
+	fmt.Println("=> DataSet: ", filename)
+
+	contentBytes, err := os.ReadFile(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	content := string(contentBytes)
+	graph, nodes := parseInput25(content)
+
+	res := calcFun(graph, nodes)
+
+	defer timeTrack(time.Now(), "intersect")
+	fmt.Println()
+
+	return res
+}
+
 // Day 24 solution
 func intersect(filename string, calcFun func([]Vector, float64, float64) int, minVal float64, maxVal float64) int {
 	fmt.Println("=> DataSet: ", filename)
@@ -23,6 +42,25 @@ func intersect(filename string, calcFun func([]Vector, float64, float64) int, mi
 	res := calcFun(vec, minVal, maxVal)
 
 	defer timeTrack(time.Now(), "intersect")
+	fmt.Println()
+
+	return res
+}
+
+// Day 21 solution
+func steps(filename string, calcFun func(map[string]bool, Point, int, int) int) int {
+	fmt.Println("=> DataSet: ", filename)
+
+	contentBytes, err := os.ReadFile(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	content := string(contentBytes)
+	grid, start, maxX, maxY := parseInput21(content)
+
+	res := calcFun(grid, start, maxX, maxY)
+
+	defer timeTrack(time.Now(), "steps")
 	fmt.Println()
 
 	return res
