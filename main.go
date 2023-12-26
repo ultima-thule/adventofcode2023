@@ -117,8 +117,17 @@ func main() {
 	case "19":
 		fmt.Println(aplenty(testDataOne, puzzle19))
 		fmt.Println(aplenty(realDataOne, puzzle19))
-		// fmt.Println(aplenty(testDataOne, puzzle19))
-		// fmt.Println(aplenty(realDataOne, puzzle19))
-
+		fmt.Println(aplenty(testDataOne, puzzle19_2))
+		fmt.Println(aplenty(realDataOne, puzzle19_2))
+	case "20":
+		fmt.Println(pulseProp(testDataOne, puzzle20))
+		// fmt.Println(pulseProp(realDataOne, puzzle20))
+		// fmt.Println(pulseProp(testDataOne, puzzle20))
+		// fmt.Println(pulseProp(realDataOne, puzzle20))
+	case "24":
+		fmt.Println(intersect(testDataOne, puzzle24, 7.0, 27.0))
+		fmt.Println(intersect(realDataOne, puzzle24, 200000000000000.0, 400000000000000.0))
+		// fmt.Println(pulseProp(testDataOne, puzzle20))
+		// fmt.Println(pulseProp(realDataOne, puzzle20))
 	}
 }

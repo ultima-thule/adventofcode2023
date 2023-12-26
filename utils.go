@@ -50,6 +50,14 @@ func convert64(text string) int64 {
 	return 0
 }
 
+func convert64f(text string) float64 {
+	intVar, err := strconv.Atoi(text)
+	if err == nil {
+		return float64(intVar)
+	}
+	return 0
+}
+
 func readInput(filename string, calcFun func([]string) int, prepFun func(data []string) []string) []string {
 	f := readFile(filename)
 	defer closeFile(f)
@@ -416,9 +424,11 @@ func parseInput19(input string) (map[string][]Workflow, []Part) {
 				tmp := strings.Split(w, ":")
 				var wf Workflow
 				if len(tmp) == 2 {
-					wf = Workflow{src: tmp[0], dst: tmp[1]}
+					greater := tmp[0][1] == '>'
+					num := convert(tmp[0][2:])
+					wf = Workflow{src: tmp[0], dst: tmp[1], src_greater: greater, src_var: string(tmp[0][0]), src_num: num}
 				} else {
-					wf = Workflow{src: "*", dst: tmp[0]}
+					wf = Workflow{src: "*", src_var: "*", dst: tmp[0]}
 				}
 				sl = append(sl, wf)
 			}
@@ -430,4 +440,73 @@ func parseInput19(input string) (map[string][]Workflow, []Part) {
 	// fmt.Println("\n", parts)
 
 	return workflows, parts
+}
+
+func parseInput20(input string) map[string]ModConfig {
+	splitted := strings.Split(input, "\n")
+	modCfg := make(map[string]ModConfig, 0)
+
+	for _, v := range splitted {
+		src := strings.Split(v, " -> ")
+		dst := strings.Split(src[1], ",")
+
+		mc := ModConfig{dest: make([]string, 0)}
+
+		switch v[0] {
+		case 'b':
+			mc.name = "broadcaster"
+			mc.typ = ModType(B)
+		case '%':
+			mc.name = src[0][1:]
+			mc.typ = ModType(F)
+		case '&':
+			mc.name = src[0][1:]
+			mc.typ = ModType(I)
+		}
+		for i := 0; i < len(dst); i++ {
+			mc.dest = append(mc.dest, strings.TrimSpace(dst[i]))
+		}
+
+		mc.prevPulses = make(map[string]PulseType, 0)
+		mc.flips = map[int]bool{-1: false}
+
+		modCfg[mc.name] = mc
+	}
+
+	for _, v := range modCfg {
+		for _, v2 := range v.dest {
+			if modCfg[v2].typ == I {
+				modCfg[v2].prevPulses[v.name] = L
+			}
+		}
+	}
+
+	return modCfg
+}
+
+func (m ModType) String() string {
+	return []string{"B", "I", "F", "ST"}[m]
+}
+
+func (pt PulseType) String() string {
+	return []string{"NO", "L", "H"}[pt]
+}
+
+func (m ModConfig) String() string {
+	return fmt.Sprintf("%s(%s) => %s prevPulses: %v", m.name, m.typ.String(), m.dest, m.prevPulses)
+}
+
+func parseInput24(input string) []Vector {
+	ret := make([]Vector, 0)
+
+	splitted := strings.Split(input, "\n")
+	for _, v := range splitted {
+		tmp := strings.Split(strings.ReplaceAll(v, " ", ""), "@")
+		point := strings.Split(tmp[0], ",")
+		vector := strings.Split(tmp[1], ",")
+		vec := Vector{x: convert64f(point[0]), y: convert64f(point[1]), z: convert64f(point[2]), vx: convert64f(vector[0]), vy: convert64f(vector[1]), vz: convert64f(vector[2])}
+		ret = append(ret, vec)
+	}
+
+	return ret
 }

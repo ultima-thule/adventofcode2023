@@ -9,7 +9,45 @@ import (
 	"time"
 )
 
-// Day 18 solution
+// Day 24 solution
+func intersect(filename string, calcFun func([]Vector, float64, float64) int, minVal float64, maxVal float64) int {
+	fmt.Println("=> DataSet: ", filename)
+
+	contentBytes, err := os.ReadFile(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	content := string(contentBytes)
+	vec := parseInput24(content)
+
+	res := calcFun(vec, minVal, maxVal)
+
+	defer timeTrack(time.Now(), "intersect")
+	fmt.Println()
+
+	return res
+}
+
+// Day 20 solution
+func pulseProp(filename string, calcFun func(map[string]ModConfig) int) int {
+	fmt.Println("=> DataSet: ", filename)
+
+	contentBytes, err := os.ReadFile(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	content := string(contentBytes)
+	wf := parseInput20(content)
+
+	res := calcFun(wf)
+
+	defer timeTrack(time.Now(), "pulseProp")
+	fmt.Println()
+
+	return res
+}
+
+// Day 19 solution
 func aplenty(filename string, calcFun func(map[string][]Workflow, []Part) int) int {
 	fmt.Println("=> DataSet: ", filename)
 
